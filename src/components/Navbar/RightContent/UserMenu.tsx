@@ -8,6 +8,7 @@ import {
   Icon,
   Flex,
   MenuDivider,
+  Text,
 } from "@chakra-ui/react";
 import { signOut, User } from "firebase/auth";
 import React from "react";
@@ -26,7 +27,7 @@ type UserMenuProps = {
 };
 
 const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
-    const setAuthModalState = useSetRecoilState(authModalState);
+  const setAuthModalState = useSetRecoilState(authModalState);
 
   return (
     <Menu>
@@ -46,6 +47,21 @@ const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
                   mr={1}
                   color="gray.300"
                 />
+                <Flex
+                  direction="column"
+                  display={{ base: "none", lg: "flex" }}
+                  fontSize="8pt"
+                  align="flex-start"
+                  mr={8}
+                >
+                  <Text fontWeight={700}>
+                    {user?.displayName || user.email?.split("@")[0]}
+                  </Text>
+                  <Flex>
+                    <Icon as={IoSparkles} color="brand.100" mr={1} />
+                    <Text color="gray.400">1 karma</Text>
+                  </Flex>
+                </Flex>
               </>
             ) : (
               <Icon as={VscAccount} fontSize={24} color="gray.400" mr={1} />
@@ -86,7 +102,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
               fontSize="10pt"
               fontWeight={700}
               _hover={{ bg: "blue.500", textColor: "white" }}
-              onClick={() => setAuthModalState({open: true, view: "login"})}
+              onClick={() => setAuthModalState({ open: true, view: "login" })}
             >
               <Flex align="center">
                 <Icon fontSize={20} mr={2} as={MdOutlineLogin} />
