@@ -1,9 +1,8 @@
-import { AddIcon } from "@chakra-ui/icons";
-import { Box, Flex, Icon } from "@chakra-ui/react";
+import { Flex, Icon } from "@chakra-ui/react";
+import React from "react";
 import { BsArrowUpRightCircle, BsChatDots } from "react-icons/bs";
 import { GrAdd } from "react-icons/gr";
 import {
-  IoFilter,
   IoFilterCircleOutline,
   IoNotificationsOutline,
   IoVideocamOutline,
@@ -36,7 +35,7 @@ const Icons: React.FC = () => {
           borderRadius={4}
           _hover={{ bg: "gray.200" }}
         >
-          <Icon as={IoVideocamOutline} fontSize={22} />
+          <Icon as={IoFilterCircleOutline} fontSize={22} />
         </Flex>
         <Flex
           mr={1.5}
@@ -46,7 +45,7 @@ const Icons: React.FC = () => {
           borderRadius={4}
           _hover={{ bg: "gray.200" }}
         >
-          <Icon as={BsArrowUpRightCircle} fontSize={22} />
+          <Icon as={IoVideocamOutline} fontSize={22} />
         </Flex>
       </Flex>
       <>
@@ -85,5 +84,4 @@ const Icons: React.FC = () => {
     </Flex>
   );
 };
-
 export default Icons;

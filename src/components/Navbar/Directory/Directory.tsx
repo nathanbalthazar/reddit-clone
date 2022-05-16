@@ -1,6 +1,6 @@
-import React from "react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { Flex, Icon, Menu, MenuButton, MenuList, Text } from "@chakra-ui/react";
+import React from "react";
 import { TiHome } from "react-icons/ti";
 import Communities from "./Communities";
 
@@ -9,11 +9,11 @@ const UserMenu: React.FC = () => {
     <Menu>
       <MenuButton
         cursor="pointer"
-        padding="8px 6px"
+        padding="8px 4px"
         borderRadius={4}
-        mr={2}
+        mr={4}
         ml={{ base: 0, md: 2 }}
-        _hover={{ outline: "1px solid", oulineColor: "gray.200" }}
+        _hover={{ outline: "1px solid", outlineColor: "gray.200" }}
       >
         <Flex
           align="center"

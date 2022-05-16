@@ -1,11 +1,14 @@
 import {
-  Flex,
+  useDisclosure,
+  Button,
   Modal,
-  ModalBody,
-  ModalCloseButton,
+  ModalOverlay,
   ModalContent,
   ModalHeader,
-  ModalOverlay,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
+  Flex,
   Text,
 } from "@chakra-ui/react";
 import React, { useEffect } from "react";
@@ -30,7 +33,7 @@ const AuthModal: React.FC = () => {
 
   useEffect(() => {
     if (user) handleClose();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    console.log("user", user);
   }, [user]);
 
   return (
@@ -59,7 +62,7 @@ const AuthModal: React.FC = () => {
             >
               {modalState.view === "login" || modalState.view === "signup" ? (
                 <>
-                  <OAuthButtons />
+                <OAuthButtons />
                   <Text color="gray.500" fontWeight={700}>
                     OR
                   </Text>
@@ -68,6 +71,7 @@ const AuthModal: React.FC = () => {
               ) : (
                 <ResetPassword />
               )}
+              
             </Flex>
           </ModalBody>
         </ModalContent>

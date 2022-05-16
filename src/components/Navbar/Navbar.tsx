@@ -7,12 +7,20 @@ import RightContent from "./RightContent/RightContent";
 import SearchInput from "./SearchInput";
 
 const Navbar: React.FC = () => {
-
-  const [user, loading, error] = useAuthState(auth)
+  const [user, loading, error] = useAuthState(auth);
 
   return (
-    <Flex bg="white" height="44px" padding="6px 12px" justify={{md: 'space-between'}} >
-      <Flex align="center" width={{ base: '40px', md: 'auto' }} mr={{ base: 0, md: 2 }} >
+    <Flex
+      bg="white"
+      height="44px"
+      padding="6px 12px"
+      justify={{ md: "space-between" }}
+    >
+      <Flex
+        align="center"
+        width={{ base: "48px", md: "auto" }}
+        mr={{ base: 0, md: 2 }}
+      >
         <Image src="/images/redditFace.svg" alt="reddit logo" height="30px" />
         <Image
           src="/images/redditText.svg"

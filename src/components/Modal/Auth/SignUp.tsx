@@ -1,45 +1,54 @@
 import { Input, Button, Flex, Text } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSetRecoilState } from "recoil";
 import { authModalState } from "../../../atoms/authModalAtom";
 import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
-import { auth } from "../../../firebase/clientApp";
+import { auth, firestore } from "../../../firebase/clientApp";
 import { FIREBASE_ERRORS } from "../../../firebase/errors";
+import { User } from "firebase/auth";
+import { addDoc, collection } from "firebase/firestore";
 
 const SignUp: React.FC = () => {
   const setAuthModalState = useSetRecoilState(authModalState);
-
-  const [signupForm, setSignupForm] = useState({
+  const [signUpForm, setSignUpForm] = useState({
     email: "",
     password: "",
     confirmPassword: "",
   });
 
   const [error, setError] = useState("");
-
-  const [createUserWithEmailAndPassword, user, loading, userError] =
+  const [createUserWithEmailAndPassword, userCred, loading, userError] =
     useCreateUserWithEmailAndPassword(auth);
 
-  // Firebase logic
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
     if (error) setError("");
-    if (signupForm.password !== signupForm.confirmPassword) {
-      // setError
+
+    if (signUpForm.password !== signUpForm.confirmPassword) {
       setError("Passwords do not match");
       return;
     }
-    // Password match
-    createUserWithEmailAndPassword(signupForm.email, signupForm.password);
+
+    createUserWithEmailAndPassword(signUpForm.email, signUpForm.password);
   };
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    // update form state
-    setSignupForm((prev) => ({
+    setSignUpForm((prev) => ({
       ...prev,
       [event.target.name]: event.target.value,
     }));
   };
+
+  const createUserDocument = async (user: User) => {
+    await addDoc(collection(firestore, "users"), JSON.parse(JSON.stringify(user)));
+  };
+
+  useEffect(() => {
+    if (userCred) {
+      createUserDocument(userCred.user);
+    }
+  }, [userCred]);
 
   return (
     <form onSubmit={onSubmit}>
@@ -49,19 +58,21 @@ const SignUp: React.FC = () => {
         placeholder="email"
         type="email"
         mb={2}
+        onChange={onChange}
         fontSize="10pt"
         _placeholder={{ color: "gray.500" }}
-        _hover={{ bg: "white", border: "1px solid", borderColor: "blue.500" }}
+        _hover={{
+          bg: "white",
+          border: "1px solid",
+          borderColor: "blue.500",
+        }}
         _focus={{
-          online: "none",
+          outline: "none",
           bg: "white",
           border: "1px solid",
           borderColor: "blue.500",
         }}
         bg="gray.50"
-        onChange={() => {
-          onChange;
-        }}
       />
       <Input
         required
@@ -69,19 +80,21 @@ const SignUp: React.FC = () => {
         placeholder="password"
         type="password"
         mb={2}
+        onChange={onChange}
         fontSize="10pt"
         _placeholder={{ color: "gray.500" }}
-        _hover={{ bg: "white", border: "1px solid", borderColor: "blue.500" }}
+        _hover={{
+          bg: "white",
+          border: "1px solid",
+          borderColor: "blue.500",
+        }}
         _focus={{
-          online: "none",
+          outline: "none",
           bg: "white",
           border: "1px solid",
           borderColor: "blue.500",
         }}
         bg="gray.50"
-        onChange={() => {
-          onChange;
-        }}
       />
       <Input
         required
@@ -89,19 +102,21 @@ const SignUp: React.FC = () => {
         placeholder="confirm password"
         type="password"
         mb={2}
+        onChange={onChange}
         fontSize="10pt"
         _placeholder={{ color: "gray.500" }}
-        _hover={{ bg: "white", border: "1px solid", borderColor: "blue.500" }}
+        _hover={{
+          bg: "white",
+          border: "1px solid",
+          borderColor: "blue.500",
+        }}
         _focus={{
-          online: "none",
+          outline: "none",
           bg: "white",
           border: "1px solid",
           borderColor: "blue.500",
         }}
         bg="gray.50"
-        onChange={() => {
-          onChange;
-        }}
       />
       <Text textAlign="center" color="red" fontSize="10pt">
         {error ||
@@ -118,7 +133,7 @@ const SignUp: React.FC = () => {
         Sign Up
       </Button>
       <Flex fontSize="9pt" justifyContent="center">
-        <Text mr={1}>Already a redditor?</Text>
+        <Text mr={1}>Already a redditor? </Text>
         <Text
           color="blue.500"
           fontWeight={700}
