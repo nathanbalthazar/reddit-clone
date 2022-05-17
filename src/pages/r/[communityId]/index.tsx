@@ -6,6 +6,7 @@ import { firestore } from "../../../firebase/clientApp";
 import safeJsonStringify from "safe-json-stringify";
 import CommunityNotFound from "../../../components/Community/NotFound";
 import Header from "../../../components/Community/Header";
+import PageContent from "../../../components/Layout/PageContent";
 
 type CommunityNameProps = {
   communityData: Community;
@@ -19,6 +20,10 @@ const CommunityPage: React.FC<CommunityNameProps> = ({ communityData }) => {
   return (
       <>
         <Header communityData={communityData} />
+        <PageContent>
+          <><div>LEFT</div></>
+          <><div>RIGHT</div></>
+        </PageContent>
       </>
   );
 };
