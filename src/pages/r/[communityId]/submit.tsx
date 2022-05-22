@@ -5,7 +5,7 @@ import PageContent from "../../../components/Layout/PageContent";
 import NewPostForm from "../../../components/Posts/NewPostForm";
 import { auth } from "../../../firebase/clientApp";
 
-const submitPostPage: React.FC = () => {
+const SubmitPostPage: React.FC = () => {
   const [user] = useAuthState(auth);
   return (
     <PageContent>
@@ -19,4 +19,4 @@ const submitPostPage: React.FC = () => {
     </PageContent>
   );
 };
-export default submitPostPage;
+export default SubmitPostPage;
