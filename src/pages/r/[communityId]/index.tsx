@@ -8,6 +8,7 @@ import CommunityNotFound from "../../../components/Community/NotFound";
 import Header from "../../../components/Community/Header";
 import PageContent from "../../../components/Layout/PageContent";
 import CreatePostLink from "../../../components/Community/CreatePostLink";
+import Posts from "../../../components/Posts/Posts";
 
 type CommunityNameProps = {
   communityData: Community;
@@ -15,14 +16,16 @@ type CommunityNameProps = {
 
 const CommunityPage: React.FC<CommunityNameProps> = ({ communityData }) => {
   if (!communityData) {
-    return <CommunityNotFound />;
+    return <CommunityNotFound />; 
   }
 
   return (
       <>
         <Header communityData={communityData} />
         <PageContent>
-          <><CreatePostLink /></>
+          <><CreatePostLink />
+            <Posts communityData={communityData} />
+          </>
           <><div>RIGHT</div></>
         </PageContent>
       </>
