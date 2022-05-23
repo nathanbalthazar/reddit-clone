@@ -16,19 +16,22 @@ type CommunityNameProps = {
 
 const CommunityPage: React.FC<CommunityNameProps> = ({ communityData }) => {
   if (!communityData) {
-    return <CommunityNotFound />; 
+    return <CommunityNotFound />;
   }
 
   return (
-      <>
-        <Header communityData={communityData} />
-        <PageContent>
-          <><CreatePostLink />
-            <Posts communityData={communityData} />
-          </>
-          <><div>RIGHT</div></>
-        </PageContent>
-      </>
+    <>
+      <Header communityData={communityData} />
+      <PageContent>
+        <>
+          <CreatePostLink />
+          <Posts communityData={communityData} />
+        </>
+        <>
+          <div>RIGHT</div>
+        </>
+      </PageContent>
+    </>
   );
 };
 
