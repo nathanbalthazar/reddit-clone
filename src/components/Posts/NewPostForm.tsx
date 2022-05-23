@@ -13,7 +13,7 @@ import React, { useState } from "react";
 import { BiPoll } from "react-icons/bi";
 import { BsLink45Deg, BsMic } from "react-icons/bs";
 import { IoDocumentText, IoImageOutline } from "react-icons/io5";
-import { Post } from "../../atoms/PostsAtom";
+import { Post } from "../../atoms/postsAtom";
 import { firestore, storage } from "../../firebase/clientApp";
 import ImageUpload from "./PostForm/ImageUpload";
 import TextInputs from "./PostForm/TextInputs";
@@ -90,14 +90,13 @@ const NewPostForm: React.FC<NewPostFormProps> = ({ user }) => {
           imageURL: downloadURL,
         })
       }
-
+      router.back()
     } catch (error: any) {
       console.log("handleCreatePost error", error.message);
       setError(true)
     }
     setLoading(false)
 
-   // router.back()
   };
 
   const onSelectImage = (event: React.ChangeEvent<HTMLInputElement>) => {
