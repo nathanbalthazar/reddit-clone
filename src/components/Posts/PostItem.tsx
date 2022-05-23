@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Flex,
   Icon,
@@ -40,6 +40,7 @@ const PostItem: React.FC<PostItemsProps> = ({
   onDeletePost,
   onSelectPost,
 }) => {
+  const [loadingImage, setLoadingImage] = useState(true);
   return (
     <Flex
       border="1px solid"
@@ -94,7 +95,16 @@ const PostItem: React.FC<PostItemsProps> = ({
           <Text fontSize="10pt">{post.body}</Text>
           {post.imageURL && (
             <Flex justify="center" align="center" p={2}>
-              <Image src={post.imageURL} maxHeight="460px" alt="Post Image" />
+              {loadingImage && (
+                <Skeleton height="200px" width="100%" borderRadius={4} />
+              )}
+              <Image
+                src={post.imageURL}
+                maxHeight="460px"
+                alt="Post Image"
+                display={loadingImage ? "none" : "unset"}
+                onLoad={() => setLoadingImage(false)}
+              />
             </Flex>
           )}
         </Stack>
