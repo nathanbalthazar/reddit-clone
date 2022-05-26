@@ -5,7 +5,7 @@ import {
   collection,
   serverTimestamp,
   Timestamp,
-  updateDoc
+  updateDoc,
 } from "firebase/firestore";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import { useRouter } from "next/router";
@@ -15,6 +15,7 @@ import { BsLink45Deg, BsMic } from "react-icons/bs";
 import { IoDocumentText, IoImageOutline } from "react-icons/io5";
 import { Post } from "../../atoms/postsAtom";
 import { firestore, storage } from "../../firebase/clientApp";
+import useSelectFile from "../../hooks/useSelectFile";
 import ImageUpload from "./PostForm/ImageUpload";
 import TextInputs from "./PostForm/TextInputs";
 import TabItem from "./TabItem";
@@ -59,9 +60,9 @@ const NewPostForm: React.FC<NewPostFormProps> = ({ user }) => {
     body: "",
   });
 
-  const [selectedFile, setSelectedFile] = useState<string>();
+  const { selectedFile, onSelectFile, setSelectedFile} = useSelectFile()
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false)
+  const [error, setError] = useState(false);
 
   const handleCreatePost = async () => {
     const { communityId } = router.query;
@@ -77,39 +78,25 @@ const NewPostForm: React.FC<NewPostFormProps> = ({ user }) => {
       createdAt: serverTimestamp() as Timestamp,
     };
 
-    setLoading(true)
+    setLoading(true);
     try {
       const postDocRef = await addDoc(collection(firestore, "posts"), newPost);
 
       if (selectedFile) {
-        const imageRef = ref(storage, `posts/${postDocRef.id}/image`)
-        await uploadString(imageRef, selectedFile, 'data_url')
-        const downloadURL = await getDownloadURL(imageRef)
+        const imageRef = ref(storage, `posts/${postDocRef.id}/image`);
+        await uploadString(imageRef, selectedFile, "data_url");
+        const downloadURL = await getDownloadURL(imageRef);
 
         await updateDoc(postDocRef, {
           imageURL: downloadURL,
-        })
+        });
       }
-      router.back()
+      router.back();
     } catch (error: any) {
       console.log("handleCreatePost error", error.message);
-      setError(true)
+      setError(true);
     }
-    setLoading(false)
-
-  };
-
-  const onSelectImage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const reader = new FileReader();
-    if (event.target.files?.[0]) {
-      reader.readAsDataURL(event.target.files?.[0]);
-    }
-
-    reader.onload = (readerEvent) => {
-      if (readerEvent.target?.result) {
-        setSelectedFile(readerEvent.target.result as string);
-      }
-    };
+    setLoading(false);
   };
 
   const onTextChange = (
@@ -148,17 +135,17 @@ const NewPostForm: React.FC<NewPostFormProps> = ({ user }) => {
         {selectedTab === "Images & Video" && (
           <ImageUpload
             selectedFile={selectedFile}
-            onSelectImage={onSelectImage}
+            onSelectImage={onSelectFile}
             setSelectedTab={setSelectedTab}
             setSelectedFile={setSelectedFile}
           />
         )}
       </Flex>
       {error && (
-        <Alert status='error'>
-        <AlertIcon />
-        <Text mr={2}>Error creating post</Text>
-      </Alert>
+        <Alert status="error">
+          <AlertIcon />
+          <Text mr={2}>Error creating post</Text>
+        </Alert>
       )}
     </Flex>
   );
