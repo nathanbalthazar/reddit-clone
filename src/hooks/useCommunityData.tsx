@@ -20,7 +20,7 @@ const useCommunityData = () => {
   const [user] = useAuthState(auth);
   const [communityStateValue, setCommunityStateValue] =
     useRecoilState(communityState);
-    const setAuthModalState = useSetRecoilState(authModalState)
+  const setAuthModalState = useSetRecoilState(authModalState);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -30,11 +30,11 @@ const useCommunityData = () => {
     isJoined: boolean
   ) => {
     if (!user) {
-        setAuthModalState({open: true, view: 'login'})
-        return
+      setAuthModalState({ open: true, view: "login" });
+      return;
     }
 
-    setLoading(true)
+    setLoading(true);
 
     if (isJoined) {
       leaveCommunity(communityData.id);
@@ -127,7 +127,12 @@ const useCommunityData = () => {
   };
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) {
+      setCommunityStateValue((prev) => ({
+        ...prev,
+        mySnippets: [],
+      }))
+    };
     getMySnippets();
   }, [user]);
 
