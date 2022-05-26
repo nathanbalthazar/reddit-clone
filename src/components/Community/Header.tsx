@@ -9,7 +9,8 @@ type HeaderProps = {
 };
 
 const Header: React.FC<HeaderProps> = ({ communityData }) => {
-  const { communityStateValue, onJoinOrLeaveCommunity, loading } = useCommunityData();
+  const { communityStateValue, onJoinOrLeaveCommunity, loading } =
+    useCommunityData();
 
   const isJoined = !!communityStateValue.mySnippets.find(
     (item) => item.communityId === communityData.id
@@ -20,8 +21,17 @@ const Header: React.FC<HeaderProps> = ({ communityData }) => {
       <Box height="50%" bg="blue.400" />
       <Flex justify="center" bg="white" flexGrow={1}>
         <Flex width="95%" maxWidth="860px">
-          {communityData.imgURL ? (
-            <Image alt='' />
+          {communityStateValue.currentCommunity?.imgURL ? (
+            <Image
+              borderRadius="full"
+              boxSize="66px"
+              position="relative"
+              top={-3}
+              color="blue.500"
+              border="4px solid white"
+              src={communityStateValue.currentCommunity.imgURL}
+              alt=""
+            />
           ) : (
             <Icon
               as={FaReddit}
