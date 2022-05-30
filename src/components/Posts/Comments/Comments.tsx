@@ -13,22 +13,12 @@ import { useSetRecoilState } from "recoil";
 import { Post, postState } from "../../../atoms/postsAtom";
 import { firestore } from "../../../firebase/clientApp";
 import CommentInput from "./CommentInput";
+import {Comment} from './CommentItem'
 
 type CommentsProps = {
   user: User;
   selectedPost: Post | null;
   communityId: string;
-};
-
-export type Comment = {
-  id: string;
-  creatorId: string;
-  creatorDisplayText: string;
-  communityId: string;
-  postId: string;
-  postTitle: string;
-  text: string;
-  createdAt: Timestamp;
 };
 
 const Comments: React.FC<CommentsProps> = ({
