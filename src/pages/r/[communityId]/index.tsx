@@ -25,7 +25,7 @@ const CommunityPage: React.FC<CommunityNameProps> = ({ communityData }) => {
       ...prev,
       currentCommunity: communityData
     }))
-  })
+  }, [communityData])
   
   if (!communityData) {
     return <CommunityNotFound />;
