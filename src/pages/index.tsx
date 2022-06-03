@@ -27,7 +27,11 @@ const Home: NextPage = () => {
   } = usePosts();
   const communityStateValue = useRecoilState(communityState);
 
-  const buildUserHomeFeed = async () => {
+  const buildUserHomeFeed =  () => {
+
+  };
+
+  const buildNoUserHomeFeed = async () => {
     setLoading(true);
     try {
       const postQuery = query(
@@ -43,8 +47,6 @@ const Home: NextPage = () => {
       console.error("Error building user home feed", error);
     }
   };
-
-  const buildNoUserHomeFeed = () => {};
 
   const getUserPostVotes = () => {};
 

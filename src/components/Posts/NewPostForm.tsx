@@ -23,7 +23,7 @@ import TabItem from "./TabItem";
 type NewPostFormProps = {
   user: User;
   communityImageURL?: string;
-};
+}; 
 
 const formTabs: TabItem[] = [
   {
