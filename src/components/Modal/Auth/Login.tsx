@@ -4,7 +4,7 @@ import { useSetRecoilState } from "recoil";
 import { authModalState } from "../../../atoms/authModalAtom";
 import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { auth } from "../../../firebase/clientApp";
-import { FIREBASE_ERRORS } from "../../../firebase/errors";
+import { firebaseErrors } from "../../../firebase/firebaseErrors";
 
 type LoginProps = {};
 
@@ -78,7 +78,7 @@ const Login: React.FC<LoginProps> = () => {
         bg="gray.50"
       />
       <Text textAlign="center" color="red" fontSize="10pt">
-        {FIREBASE_ERRORS[error?.message as keyof typeof FIREBASE_ERRORS]}
+        {firebaseErrors[error?.message as keyof typeof firebaseErrors]}
       </Text>
       <Button
         width="100%"
