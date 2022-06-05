@@ -1,10 +1,10 @@
 import {
   Box,
   Flex,
-  Text,
   SkeletonCircle,
   SkeletonText,
   Stack,
+  Text,
 } from "@chakra-ui/react";
 import { User } from "firebase/auth";
 import {
@@ -16,6 +16,7 @@ import {
   query,
   serverTimestamp,
   Timestamp,
+  updateDoc,
   where,
   writeBatch,
 } from "firebase/firestore";
@@ -24,61 +25,67 @@ import { useSetRecoilState } from "recoil";
 import { Post, postState } from "../../../atoms/postsAtom";
 import { firestore } from "../../../firebase/clientApp";
 import CommentInput from "./CommentInput";
-import CommentItem, { Comment } from "./CommentItem";
+import CommentItem from "./CommentItem";
 
-type CommentsProps = {
+interface ICommentsProps {
   user: User;
   selectedPost: Post | null;
   communityId: string;
+}
+
+export type Comment = {
+  id: string;
+  creatorId: string;
+  creatorDisplayText: string;
+  communityId: string;
+  postId: string;
+  postTitle: string;
+  text: string;
+  createdAt: Timestamp;
 };
 
-const Comments: React.FC<CommentsProps> = ({
+const Comments: React.FC<ICommentsProps> = ({
   user,
-  communityId,
   selectedPost,
+  communityId,
 }) => {
   const [commentText, setCommentText] = useState("");
   const [comments, setComments] = useState<Comment[]>([]);
-  const [fetchLoading, setFetchLoading] = useState(true);
+  const [fetchLoading, setFetchLoading] = useState(false);
   const [createLoading, setCreateLoading] = useState(false);
-  const [loadingDeleteId, setLoadingDeleteId] = useState("");
   const setPostState = useSetRecoilState(postState);
+  const [loadingDelete, setLoadingDelete] = useState("");
 
-  const onCreateContent = async () => {
+  const onCreateComment = async (commentText: string) => {
     setCreateLoading(true);
-
     try {
       const batch = writeBatch(firestore);
-
       const commentDocRef = doc(collection(firestore, "comments"));
 
-      const newComment: Comment = {
+      //Create comment document
+      const comment: Comment = {
         id: commentDocRef.id,
-        creatorId: user.uid,
-        creatorDisplayText: user.email!.split("@")[0],
-        communityId,
+        text: commentText,
         postId: selectedPost?.id!,
         postTitle: selectedPost?.title!,
-        text: commentText,
+        creatorId: user.uid,
+        communityId: communityId,
         createdAt: serverTimestamp() as Timestamp,
+        creatorDisplayText: user.email!?.split("@")[0],
       };
 
-      batch.set(commentDocRef, newComment);
+      batch.set(commentDocRef, comment);
 
-      newComment.createdAt = { seconds: Date.now() / 1000 } as Timestamp;
-
-      const postDocRef = doc(
-        collection(firestore, "posts"),
-        selectedPost?.id as string
-      );
-      batch.update(postDocRef, {
-        numberOfComments: increment(1),
-      });
+      comment.createdAt = { seconds: Date.now() / 1000 } as Timestamp;
+      //update comment count on post + 1
+      const postDocRef = doc(firestore, "posts", selectedPost?.id!);
+      batch.update(postDocRef, { numberOfComments: increment(1) });
 
       await batch.commit();
 
       setCommentText("");
-      setComments((prev) => [newComment, ...prev]);
+      setComments((prev) => [comment, ...prev]);
+      //update client recoil state
       setPostState((prev) => ({
         ...prev,
         selectedPost: {
@@ -86,27 +93,30 @@ const Comments: React.FC<CommentsProps> = ({
           numberOfComments: prev.selectedPost?.numberOfComments! + 1,
         } as Post,
       }));
-    } catch (error) {
-      console.log("onCreateContent error", error);
+    } catch (error: any) {
+      console.log("handle error from Comments comp", error.message);
     }
+
     setCreateLoading(false);
   };
 
   const onDeleteComment = async (comment: Comment) => {
-    setLoadingDeleteId(comment.id);
+    setLoadingDelete(comment.id);
     try {
+      //delete comment from document
       const batch = writeBatch(firestore);
-
-      const commentDocRef = doc(collection(firestore, "comments"), comment.id);
+      const commentDocRef = doc(firestore, "comments", comment.id);
       batch.delete(commentDocRef);
-
-      const postDocRef = doc(firestore, "posts", selectedPost?.id!);
+      //update comment count on post  -1
+      const postDocRef = doc(firestore, "posts", comment.postId);
       batch.update(postDocRef, {
         numberOfComments: increment(-1),
       });
 
+      // commit all changes
       await batch.commit();
 
+      //update client recoil state
       setPostState((prev) => ({
         ...prev,
         selectedPost: {
@@ -115,30 +125,50 @@ const Comments: React.FC<CommentsProps> = ({
         } as Post,
       }));
 
+      // Update local component state
       setComments((prev) => prev.filter((item) => item.id !== comment.id));
-    } catch (error) {
-      console.log("onDeleteComment error", error);
+    } catch (error: any) {
+      console.error("onDeleteComment error", error.message);
     }
-    setLoadingDeleteId("");
+    setLoadingDelete("");
+  };
+
+  const onUpdateComment = async (commentId: string, newText: string) => {
+    //Update on document
+    try {
+      const commentDocRef = doc(firestore, "comments", commentId);
+      updateDoc(commentDocRef, {
+        text: newText,
+      });
+
+      setComments((prev) =>
+        prev.map((comment) => {
+          if (comment.id === commentId) comment.text = newText;
+          return comment;
+        })
+      );
+    } catch (error: any) {
+      console.error("handle updateComment", error.message);
+    }
+    //Update on local state
   };
 
   const getPostComments = async () => {
     try {
-      const commentsQuery = query(
+      const commentQuery = query(
         collection(firestore, "comments"),
         where("postId", "==", selectedPost?.id),
         orderBy("createdAt", "desc")
       );
-      const commentDocs = await getDocs(commentsQuery);
-      const comments = commentDocs.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
+      const commentsDocs = await getDocs(commentQuery);
+      const comments = commentsDocs.docs.map((comment) => ({
+        id: comment.id,
+        ...comment.data(),
       }));
       setComments(comments as Comment[]);
-    } catch (error) {
-      console.log("getPostComments error", error);
+    } catch (error: any) {
+      console.log("getPostError", error.message);
     }
-    setFetchLoading(false);
   };
 
   useEffect(() => {
@@ -153,26 +183,24 @@ const Comments: React.FC<CommentsProps> = ({
         pl={10}
         pr={4}
         mb={6}
-        fontSize="10pt"
+        fontSize={"10pt"}
         width="100%"
       >
-        {!fetchLoading && (
-          <CommentInput
-            commentText={commentText}
-            setCommentText={setCommentText}
-            user={user}
-            createLoading={createLoading}
-            onCreateComment={onCreateContent}
-          />
-        )}
+        <CommentInput
+          user={user}
+          comment={commentText}
+          setComment={setCommentText}
+          onCreateComment={onCreateComment}
+          loading={createLoading}
+        />
       </Flex>
       <Stack spacing={6} p={2}>
         {fetchLoading ? (
           <>
             {[0, 1, 2].map((item) => (
               <Box key={item} padding="6" bg="white">
-                <SkeletonCircle size="10" />
-                <SkeletonText mt="4" noOfLines={2} spacing="4" />
+                <SkeletonCircle />
+                <SkeletonText mt={3} noOfLines={2} spacing={4} />
               </Box>
             ))}
           </>
@@ -187,19 +215,21 @@ const Comments: React.FC<CommentsProps> = ({
                 borderColor="gray.100"
                 p={20}
               >
-                <Text fontWeight={700} opacity={0.3}>
-                  No comments yet.
+                <Text fontWeight="700" opacity={0.3}>
+                  No comments yet! 😴
                 </Text>
               </Flex>
             ) : (
               <>
+                {" "}
                 {comments.map((comment) => (
                   <CommentItem
                     key={comment.id}
                     comment={comment}
                     onDeleteComment={onDeleteComment}
-                    loadingDelete={loadingDeleteId === comment.id}
-                    userId={user.uid}
+                    onUpdateComment={onUpdateComment}
+                    loadingDelete={comment.id === loadingDelete}
+                    userId={user?.uid || ""}
                   />
                 ))}
               </>
@@ -210,4 +240,5 @@ const Comments: React.FC<CommentsProps> = ({
     </Box>
   );
 };
+
 export default Comments;

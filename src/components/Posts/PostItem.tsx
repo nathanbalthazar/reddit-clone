@@ -1,17 +1,21 @@
-import React, { useState } from "react";
 import {
   Alert,
+  AlertDescription,
   AlertIcon,
+  AlertTitle,
   Flex,
+  HStack,
   Icon,
   Image,
+  Link,
   Skeleton,
   Spinner,
-  Stack,
   Text,
 } from "@chakra-ui/react";
+import { motion } from "framer-motion";
 import moment from "moment";
-import Router, { NextRouter, useRouter } from "next/router";
+import { useRouter } from "next/router";
+import React, { useState } from "react";
 import { AiOutlineDelete } from "react-icons/ai";
 import { BsChat, BsDot } from "react-icons/bs";
 import { FaReddit } from "react-icons/fa";
@@ -24,88 +28,109 @@ import {
   IoBookmarkOutline,
 } from "react-icons/io5";
 import { Post } from "../../atoms/postsAtom";
-import Link from "next/link";
 
-type PostItemsProps = {
+interface IPostItemProps {
   post: Post;
   userIsCreator: boolean;
   userVoteValue?: number;
   onVote: (
-    event: React.MouseEvent<SVGElement, MouseEvent>,
+    event: React.MouseEvent<SVGElement | MouseEvent>,
     post: Post,
     vote: number,
     communityId: string
   ) => void;
-  onDeletePost: (post: Post) => Promise<boolean>;
   onSelectPost?: (post: Post) => void;
+  onDeletePost: (post: Post) => Promise<boolean>;
   homePage?: boolean;
-};
+}
 
-const PostItem: React.FC<PostItemsProps> = ({
+const PostItem: React.FunctionComponent<IPostItemProps> = ({
   post,
   userIsCreator,
   userVoteValue,
-  onVote,
   onDeletePost,
   onSelectPost,
+  onVote,
   homePage,
 }) => {
-  const [loadingImage, setLoadingImage] = useState(true);
-  const [loadingDelete, setloadingDelete] = useState(false);
-  const router = useRouter();
+  const [error, setError] = useState("");
+  const [loadingImage, setLoadinImage] = useState(true);
+  const [loadingDelete, setLoadingDelete] = useState(false);
   const singlePostPage = !onSelectPost;
+  const router = useRouter();
 
-  const [error, setError] = useState(false);
-
-  const handleDelete = async (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>
+  const handlePostDelete = async (
+    event: React.MouseEvent<HTMLDivElement | MouseEvent>
   ) => {
     event.stopPropagation();
-    setloadingDelete(true);
+    setLoadingDelete(true);
     try {
       const success = await onDeletePost(post);
 
       if (!success) {
-        throw new Error("Failed to delete post");
+        throw new Error("Failed to delete post! 😨");
       }
-      console.log("Post was successfully deleted");
+
       if (singlePostPage) {
-        router.push(`/r/${post.communityId}`);
+        router.push(`r/${post.communityId}/`);
       }
     } catch (error: any) {
       setError(error.message);
     }
-    setloadingDelete(false);
+    setLoadingDelete(false);
+  };
+
+  // 1000 karma convert to 1k
+  function kFormatter(num: number) {
+    if (num > 999) {
+      return (num / 1000).toFixed(1) + "k";
+    } else {
+      return num;
+    }
+  }
+
+  const variant = {
+    initial: { x: 20, opacity: 0 },
+    animate: { x: 0, opacity: 1 },
+    exit: { x: -20, opacity: 0 },
   };
 
   return (
     <Flex
+      as={motion.div}
       border="1px solid"
       bg="white"
       borderColor={singlePostPage ? "white" : "gray.300"}
       borderRadius={singlePostPage ? "4px 4px 0px 0px" : "4px"}
-      _hover={{ borderColor: singlePostPage ? "none" : "gray.500" }}
+      _hover={{ borderColor: singlePostPage ? "white" : "gray.500" }}
       cursor={singlePostPage ? "unset" : "pointer"}
-      onClick={() => onSelectPost && onSelectPost(post)}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      variants={variant}
     >
+      {/* Voting section  */}
       <Flex
-        direction="column"
+        direction={"column"}
         align="center"
         bg={singlePostPage ? "none" : "gray.100"}
         p={2}
-        width="40px"
+        width={["50px", "40px"]}
         borderRadius={singlePostPage ? "0" : "3px 0px 0px 3px"}
+        gap={[1, null]}
       >
         <Icon
           as={
             userVoteValue === 1 ? IoArrowUpCircleSharp : IoArrowUpCircleOutline
           }
           color={userVoteValue === 1 ? "brand.100" : "gray.400"}
-          fontSize={22}
+          fontSize={[35, 22]}
           onClick={(event) => onVote(event, post, 1, post.communityId)}
-          cursor="pointer"
+          cursor={"pointer"}
         />
-        <Text fontSize="9pt">{post.voteStatus}</Text>
+        <Text fontSize={["13pt", "10pt"]} fontWeight={700}>
+          {kFormatter(post.voteStatus)}
+        </Text>
         <Icon
           as={
             userVoteValue === -1
@@ -113,52 +138,62 @@ const PostItem: React.FC<PostItemsProps> = ({
               : IoArrowDownCircleOutline
           }
           color={userVoteValue === -1 ? "#4379ff" : "gray.400"}
-          fontSize={22}
+          fontSize={[35, 22]}
           onClick={(event) => onVote(event, post, -1, post.communityId)}
-          cursor="pointer"
+          cursor={"pointer"}
         />
       </Flex>
-      <Flex direction="column" width="100%">
-        {error && (
-          <Alert status="error">
-            <AlertIcon />
-            <Text mr={2}>{error}</Text>
-          </Alert>
-        )}
-        <Stack spacing={1} p="10px">
-          <Stack direction="row" spacing={0.6} align="center" fontSize="9pt">
+
+      {/* Post Content  */}
+      <Flex
+        direction="column"
+        width="100%"
+        onClick={() => onSelectPost && onSelectPost(post)}
+      >
+        <Flex direction="column" p="10px">
+          {/* User Info  */}
+          <HStack>
+            {/* Home Page check  */}
             {homePage && (
-              <>
+              <Flex align="center" gap={1}>
                 {post.communityImageURL ? (
                   <Image
                     src={post.communityImageURL}
                     borderRadius="full"
-                    boxSize="18px"
-                    mr={2}
-                    alt=""
+                    boxSize="16px"
+                    alt=" "
                   />
                 ) : (
-                  <Icon as={FaReddit} fontSize="18pt" mr={1} color="blue.500" />
+                  <Icon as={FaReddit} fontSize="16pt" color="blue.500" />
                 )}
                 <Link href={`r/${post.communityId}`}>
                   <Text
-                    fontWeight={700}
+                    fontWeight={600}
                     _hover={{ textDecoration: "underline" }}
-                    onClick={(event) => event.stopPropagation()}
+                    onClick={(e) => e.stopPropagation()}
+                    fontSize="10pt"
                   >{`r/${post.communityId}`}</Text>
                 </Link>
-                <Icon as={BsDot} color="gray.500" fontSize={8} />
-              </>
+                <Icon as={BsDot} fontSize="10px" color="gray.500" />
+              </Flex>
             )}
-            <Text>
+            <Text fontSize="9pt" color="gray.500">
               Posted by u/{post.creatorDisplayName}{" "}
-              {moment(new Date(post.createdAt?.seconds * 1000)).fromNow()}
+              {moment(new Date(post.createdAt.seconds * 1000)).fromNow()}
             </Text>
-          </Stack>
-          <Text fontSize="12pt" fontWeight={600}>
+          </HStack>
+
+          {/* Post title  */}
+          <Text fontSize={["17pt", "14pt"]} fontWeight={600}>
             {post.title}
           </Text>
-          <Text fontSize="10pt">{post.body}</Text>
+
+          {/* Post Body  */}
+          <Text mt={2} fontSize={["13pt", "10pt"]} noOfLines={[4, 2, 5]}>
+            {post.body}
+          </Text>
+
+          {/* Post Image if have any */}
           {post.imageURL && (
             <Flex justify="center" align="center" p={2}>
               {loadingImage && (
@@ -167,71 +202,89 @@ const PostItem: React.FC<PostItemsProps> = ({
               <Image
                 src={post.imageURL}
                 maxHeight="460px"
-                alt="Post Image"
-                display={loadingImage ? "none" : "unset"}
-                onLoad={() => setLoadingImage(false)}
+                alt="post image"
+                display={loadingImage ? "none" : ""}
+                onLoad={() => setLoadinImage(false)}
               />
             </Flex>
           )}
-        </Stack>
-        <Flex ml={1} mb={0.5} color="gray.50">
+        </Flex>
+
+        {/* Bottom section  */}
+        <Flex ml={2} mb={2} color="gray.500" fontWeight={4}>
+          {/* Comments  */}
           <Flex
-            align="center"
+            align={"center"}
             p="8px 10px"
             borderRadius={4}
-            _hover={{ backgroundColor: "gray.200" }}
+            _hover={{ bg: "gray.200" }}
             cursor="pointer"
+            gap={2}
           >
-            <Icon as={BsChat} mr={2} />
+            <Icon as={BsChat}></Icon>
             <Text fontSize="9pt">{post.numberOfComments}</Text>
           </Flex>
-          <Flex ml={1} mb={0.5} color="gray.50">
+
+          {/* share  */}
+          <Flex
+            align={"center"}
+            p="8px 10px"
+            borderRadius={4}
+            _hover={{ bg: "gray.200" }}
+            cursor="pointer"
+            gap={2}
+          >
+            <Icon as={IoArrowRedoOutline}></Icon>
+            <Text fontSize="9pt">Share</Text>
+          </Flex>
+
+          {/* save  */}
+          <Flex
+            align={"center"}
+            p="8px 10px"
+            borderRadius={4}
+            _hover={{ bg: "gray.200" }}
+            cursor="pointer"
+            gap={2}
+          >
+            <Icon as={IoBookmarkOutline}></Icon>
+            <Text fontSize="9pt">Save</Text>
+          </Flex>
+
+          {/* Delete post  */}
+          {userIsCreator && (
             <Flex
-              align="center"
+              align={"center"}
               p="8px 10px"
               borderRadius={4}
-              _hover={{ backgroundColor: "gray.200" }}
+              _hover={{ bg: "gray.200" }}
               cursor="pointer"
+              onClick={handlePostDelete}
+              gap={2}
             >
-              <Icon as={IoArrowRedoOutline} mr={2} />
-              <Text fontSize="9pt">Share</Text>
-            </Flex>
-            <Flex ml={1} mb={0.5} color="gray.50">
-              <Flex
-                align="center"
-                p="8px 10px"
-                borderRadius={4}
-                _hover={{ backgroundColor: "gray.200" }}
-                cursor="pointer"
-              >
-                <Icon as={IoBookmarkOutline} mr={2} />
-                <Text fontSize="9pt">Save</Text>
-              </Flex>
-
-              {userIsCreator && (
-                <Flex
-                  align="center"
-                  p="8px 10px"
-                  borderRadius={4}
-                  _hover={{ backgroundColor: "gray.200" }}
-                  cursor="pointer"
-                  onClick={handleDelete}
-                >
-                  {loadingDelete ? (
-                    <Spinner size="sm" />
-                  ) : (
-                    <>
-                      <Icon as={AiOutlineDelete} mr={2} />
-                      <Text fontSize="9pt">Save</Text>
-                    </>
-                  )}
-                </Flex>
+              {loadingDelete ? (
+                <Spinner size={"sm"} />
+              ) : (
+                <>
+                  <Icon as={AiOutlineDelete}></Icon>
+                  <Text fontSize="9pt">Delete</Text>
+                </>
               )}
             </Flex>
-          </Flex>
+          )}
         </Flex>
+
+        {/* error handling UI  */}
+        {error && (
+          <Alert status="error">
+            <AlertIcon />
+            <AlertTitle>Failed to delete post! 😱</AlertTitle>
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
       </Flex>
     </Flex>
   );
 };
+
 export default PostItem;

@@ -1,67 +1,68 @@
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import {
   Flex,
+  HStack,
   Icon,
-  Image,
   Menu,
   MenuButton,
   MenuList,
   Text,
+  Image,
+  useMediaQuery,
 } from "@chakra-ui/react";
 import React from "react";
-import { TiHome } from "react-icons/ti";
 import useDirectory from "../../../hooks/useDirectory";
-import Communities from "./Communities";
+import { Communities } from "./Communitites";
+import SideMenu from "./SideMenu";
 
-const UserMenu: React.FC = () => {
+export const Directory: React.FC = () => {
   const { directoryState, toggleMenuOpen } = useDirectory();
+  const [isLargerThan400] = useMediaQuery("(min-width: 400px)");
 
   return (
     <Menu isOpen={directoryState.isOpen}>
       <MenuButton
         cursor="pointer"
-        padding="8px 4px"
+        padding="3px 6px"
         borderRadius={4}
-        mr={4}
-        ml={{ base: 0, md: 2 }}
         _hover={{ outline: "1px solid", outlineColor: "gray.200" }}
         onClick={toggleMenuOpen}
       >
-        <Flex
-          align="center"
-          justify="space-between"
+        <HStack
+          justifyContent="space-between"
           width={{ base: "auto", lg: "200px" }}
         >
           <Flex align="center">
-            {directoryState.selectedMenuItem.ImageURL ? (
+            {directoryState.selectedMenuItem.imageURL ? (
               <Image
-                src={directoryState.selectedMenuItem.ImageURL}
+                src={directoryState.selectedMenuItem.imageURL}
                 borderRadius="full"
-                boxSize="24px"
+                boxSize="27px"
                 mr={2}
-                alt=""
+                alt={directoryState.selectedMenuItem.displayText + "image"}
               />
             ) : (
               <Icon
                 as={directoryState.selectedMenuItem.icon}
-                color={directoryState.selectedMenuItem.iconColor}
                 fontSize={24}
                 mr={{ base: 1, md: 2 }}
-              />
+              ></Icon>
             )}
-            <Flex display={{ base: "none", lg: "flex" }}>
-              <Text fontWeight={600} fontSize="10pt">
-                {directoryState.selectedMenuItem.displayText}
-              </Text>
-            </Flex>
+            <Text display={{ base: "none", md: "unset" }}>
+              {directoryState.selectedMenuItem.displayText}
+            </Text>
           </Flex>
-          <ChevronDownIcon />
-        </Flex>
+          <ChevronDownIcon fontSize={23} />
+        </HStack>
       </MenuButton>
-      <MenuList>
-        <Communities />
-      </MenuList>
+
+      {isLargerThan400 ? (
+        <MenuList>
+          <Communities />
+        </MenuList>
+      ) : (
+        <SideMenu />
+      )}
     </Menu>
   );
 };
-export default UserMenu;

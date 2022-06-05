@@ -1,4 +1,5 @@
 import { Button, Flex, Input, Text } from "@chakra-ui/react";
+import { motion } from "framer-motion";
 import React, { useState } from "react";
 import { useSetRecoilState } from "recoil";
 import { authModalState } from "../../../atoms/authModalAtom";
@@ -6,125 +7,118 @@ import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { auth } from "../../../firebase/clientApp";
 import { firebaseErrors } from "../../../firebase/firebaseErrors";
 
-type LoginProps = {};
+const variants = {
+  enter: { opacity: 0, x: 50 },
+  visible: { opacity: 1, x: 0 },
+  exit: { opacity: 0, x: 50 },
+};
 
-const Login: React.FC<LoginProps> = () => {
-  const setAuthModalState = useSetRecoilState(authModalState);
-  const [loginForm, setLoginForm] = useState({
+const Login: React.FC = () => {
+  const setModalState = useSetRecoilState(authModalState);
+  const [login, setLogin] = useState({
     email: "",
     password: "",
   });
 
-  const [signInWithEmailAndPassWord, user, loading, error] =
+  const [loginError, setLoginError] = useState("");
+
+  const [signInWithEmailAndPassword, user, loading, error] =
     useSignInWithEmailAndPassword(auth);
 
-  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    signInWithEmailAndPassWord(loginForm.email, loginForm.password);
-  };
-
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setLoginForm((prev) => ({
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    //Update input Data
+    setLogin((prev) => ({
       ...prev,
-      [event.target.name]: event.target.value,
+      [e.target.name]: e.target.value,
     }));
   };
-
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoginError("");
+    signInWithEmailAndPassword(login.email, login.password);
+  };
   return (
-    <form onSubmit={onSubmit}>
-      <Input
-        required
-        name="email"
-        placeholder="email"
-        type="email"
-        mb={2}
-        onChange={onChange}
-        fontSize="10pt"
-        _placeholder={{ color: "gray.500" }}
-        _hover={{
-          bg: "white",
-          border: "1px solid",
-          borderColor: "blue.500",
-        }}
-        _focus={{
-          outline: "none",
-          bg: "white",
-          border: "1px solid",
-          borderColor: "blue.500",
-        }}
-        bg="gray.50"
-      />
-      <Input
-        required
-        name="password"
-        placeholder="password"
-        type="password"
-        mb={2}
-        onChange={onChange}
-        fontSize="10pt"
-        _placeholder={{ color: "gray.500" }}
-        _hover={{
-          bg: "white",
-          border: "1px solid",
-          borderColor: "blue.500",
-        }}
-        _focus={{
-          outline: "none",
-          bg: "white",
-          border: "1px solid",
-          borderColor: "blue.500",
-        }}
-        bg="gray.50"
-      />
-      <Text textAlign="center" color="red" fontSize="10pt">
-        {firebaseErrors[error?.message as keyof typeof firebaseErrors]}
-      </Text>
-      <Button
-        width="100%"
-        height="36px"
-        mt={2}
-        mb={2}
-        type="submit"
-        isLoading={loading}
-      >
-        Log In
-      </Button>
-      <Flex justifyContent="center" mb={2}>
-        <Text fontSize="9pt" mr={1}>
-          Forgot your password?
+    <motion.div
+      initial="enter"
+      animate="visible"
+      exit="exit"
+      variants={variants}
+    >
+      <form onSubmit={onSubmit}>
+        <Input
+          required
+          name="email"
+          placeholder="Email"
+          type="email"
+          mb={3}
+          onChange={onChange}
+          _placeholder={{ color: "gray.500" }}
+          _hover={{ bg: "white", border: "1px solid", borderColor: "blue.500" }}
+          _focus={{
+            outline: "none",
+            bg: "white",
+            border: "1px solid",
+            borderColor: "blue.500",
+          }}
+        />
+        <Input
+          required
+          name="password"
+          placeholder="Password"
+          type="password"
+          mb={3}
+          onChange={onChange}
+          _placeholder={{ color: "gray.500" }}
+          _hover={{ bg: "white", border: "1px solid", borderColor: "blue.500" }}
+          _focus={{
+            outline: "none",
+            bg: "white",
+            border: "1px solid",
+            borderColor: "blue.500",
+          }}
+        />
+        <Text textAlign="center" color="red.500" fontSize="10pt" mb="5px">
+          {firebaseErrors[error?.message as keyof typeof firebaseErrors]}
         </Text>
-        <Text
-          fontSize="9pt"
-          color="blue.500"
-          cursor="pointer"
-          onClick={() =>
-            setAuthModalState((prev) => ({
-              ...prev,
-              view: "resetPassword",
-            }))
-          }
-        >
-          Reset
-        </Text>
-      </Flex>
-      <Flex fontSize="9pt" justifyContent="center">
-        <Text mr={1}>New here?</Text>
-        <Text
-          color="blue.500"
-          fontWeight={700}
-          cursor="pointer"
-          onClick={() =>
-            setAuthModalState((prev) => ({
-              ...prev,
-              view: "signup",
-            }))
-          }
-        >
-          SIGN UP
-        </Text>
-      </Flex>
-    </form>
+        <Button type="submit" width="100%" h="36px" mb={2} isLoading={loading}>
+          Submit
+        </Button>
+        <Flex justifyContent="center" mb={2}>
+          <Text fontSize="9pt" mr={1}>
+            Forgot your password ?
+          </Text>
+          <Text
+            fontSize="9pt"
+            color="blue.500"
+            cursor="pointer"
+            onClick={() => {
+              setModalState((prev) => ({
+                ...prev,
+                view: "resetPassword",
+              }));
+            }}
+          >
+            Reset
+          </Text>
+        </Flex>
+        <Flex fontSize="10pt" gap={1} justify="center">
+          <Text>New here ?</Text>
+          <Text
+            color="blue.600"
+            fontWeight="700"
+            cursor="pointer"
+            onClick={() =>
+              setModalState((prev) => ({
+                ...prev,
+                view: "signup",
+              }))
+            }
+          >
+            SIGN UP
+          </Text>
+        </Flex>
+      </form>
+    </motion.div>
   );
 };
 export default Login;

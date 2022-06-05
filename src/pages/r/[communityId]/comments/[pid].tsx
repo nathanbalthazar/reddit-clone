@@ -1,44 +1,54 @@
 import { User } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
+import { NextPage } from "next";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { Post } from "../../../../atoms/postsAtom";
-import About from "../../../../components/Community/About";
+import About from "../../../../components/Communtiy/About";
 import PageContent from "../../../../components/Layout/PageContent";
 import Comments from "../../../../components/Posts/Comments/Comments";
 import PostItem from "../../../../components/Posts/PostItem";
 import { auth, firestore } from "../../../../firebase/clientApp";
-import useCommunityData from "../../../../hooks/useCommunityData";
-import usePosts from "../../../../hooks/usePosts";
+import { useCommunityData } from "../../../../hooks/useCommunityData";
+import usePostsData from "../../../../hooks/usePostsData";
 
-const PostPage: React.FC = () => {
-  const [user] = useAuthState(auth);
-  const { onDeletePost, onVote, postStateValue, setPostStateValue } =
-    usePosts();
+interface IPostPageProps {}
+
+const PostPage: NextPage = (props) => {
   const router = useRouter();
+  const [user] = useAuthState(auth);
+  const {
+    setPostStateValue,
+    postStateValue,
+    onVote,
+    onSelectPost,
+    onDeletePost,
+  } = usePostsData();
+
   const { communityStateValue } = useCommunityData();
 
-  const fetchPost = async (postId: string) => {
+  const fetchPost = async (pid: string) => {
     try {
-      const postDocRef = doc(firestore, `posts/${postId}`);
+      const postDocRef = doc(firestore, "posts", pid);
       const postDoc = await getDoc(postDocRef);
+
       setPostStateValue((prev) => ({
         ...prev,
-        post: { id: postDoc.id, ...postDoc.data() } as Post,
+        selectedPost: { id: postDoc.id, ...postDoc.data() } as Post,
       }));
-    } catch (error) {
-      console.log("fetchPost error", error);
+    } catch (error: any) {
+      console.log("handle error in pid", error.message);
     }
   };
 
   useEffect(() => {
-    const { pid } = router.query;
+    const pid = router.query.pid;
 
-    if (pid) {
+    if (pid && !communityStateValue.currentCommunity) {
       fetchPost(pid as string);
     }
-  }, [router.query, postStateValue.selectedPost]);
+  }, [router.query, communityStateValue.currentCommunity]);
 
   return (
     <PageContent>
@@ -50,7 +60,7 @@ const PostPage: React.FC = () => {
             onDeletePost={onDeletePost}
             userVoteValue={
               postStateValue.postVotes.find(
-                (item) => item.id === postStateValue.selectedPost?.id
+                (item) => item.postId === postStateValue.selectedPost?.id
               )?.voteValue
             }
             userIsCreator={user?.uid === postStateValue.selectedPost?.creatorId}
@@ -59,7 +69,7 @@ const PostPage: React.FC = () => {
         <Comments
           user={user as User}
           selectedPost={postStateValue.selectedPost}
-          communityId={postStateValue.selectedPost?.communityId as string}
+          communityId={communityStateValue.currentCommunity?.id as string}
         />
       </>
       <>
@@ -70,4 +80,5 @@ const PostPage: React.FC = () => {
     </PageContent>
   );
 };
+
 export default PostPage;

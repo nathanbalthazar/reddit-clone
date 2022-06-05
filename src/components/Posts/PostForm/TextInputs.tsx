@@ -1,27 +1,29 @@
 import { Button, Flex, Input, Stack, Textarea } from "@chakra-ui/react";
-import React from "react";
+import * as React from "react";
 
-type TextInputsProps = {
+interface ITextInputsProps {
   textInputs: {
     title: string;
     body: string;
   };
+
   onChange: (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => void;
   handleCreatePost: () => void;
   loading: boolean;
-};
+}
 
-const TextInputs: React.FC<TextInputsProps> = ({
+const TextInputs: React.FunctionComponent<ITextInputsProps> = ({
   textInputs,
   onChange,
   handleCreatePost,
   loading,
 }) => {
   return (
-    <Stack spacing={3} width="100%">
+    <Stack width="100%" spacing="3">
       <Input
+        type="text"
         name="title"
         value={textInputs.title}
         onChange={onChange}
@@ -38,12 +40,11 @@ const TextInputs: React.FC<TextInputsProps> = ({
       />
       <Textarea
         name="body"
-        onChange={onChange}
         value={textInputs.body}
+        onChange={onChange}
         fontSize="10pt"
         borderRadius={4}
-        height="100px"
-        placeholder="Text (optional)"
+        placeholder="Text (Optional)"
         _placeholder={{ color: "gray.500" }}
         _focus={{
           outline: "none",
@@ -55,10 +56,10 @@ const TextInputs: React.FC<TextInputsProps> = ({
       <Flex justify="flex-end">
         <Button
           height="34px"
-          padding="0px 30px"
+          p="0px 30px"
           disabled={!textInputs.title}
-          isLoading={loading}
           onClick={handleCreatePost}
+          isLoading={loading}
         >
           Post
         </Button>
@@ -66,4 +67,5 @@ const TextInputs: React.FC<TextInputsProps> = ({
     </Stack>
   );
 };
+
 export default TextInputs;

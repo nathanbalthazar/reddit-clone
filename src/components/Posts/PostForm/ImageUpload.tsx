@@ -1,35 +1,36 @@
 import { Button, Flex, Image, Input, Stack } from "@chakra-ui/react";
 import React, { useRef } from "react";
 
-type ImageUploadProps = {
-  selectedFile?: string;
-  onSelectImage: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  setSelectedTab: (value: string) => void;
+interface IImageUploadProps {
+  onSelectedImage: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  selectedFile: string;
   setSelectedFile: (value: string) => void;
-};
+  setSelectedTab: (value: string) => void;
+}
 
-const ImageUpload: React.FC<ImageUploadProps> = ({
-  selectedFile,
-  onSelectImage,
+const ImageUpload: React.FunctionComponent<IImageUploadProps> = ({
+  onSelectedImage,
   setSelectedTab,
   setSelectedFile,
+  selectedFile,
 }) => {
-  const selectedFileRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   return (
-    <Flex direction="column" justify="center" align="center" width="100%">
+    <Flex direction={"column"} justify="center" align="center" width="100%">
       {selectedFile ? (
         <>
-          <Image src={selectedFile} maxWidth="400px" maxHeight="400px" alt="" />
-          <Stack direction="row" mt={4}>
+          <Image
+            src={selectedFile}
+            maxW="400px"
+            maxHeight="400px"
+            alt={`your uploaded image`}
+          />
+          <Stack direction="row" mt="20px">
             <Button height="28px" onClick={() => setSelectedTab("Post")}>
-              Back to Post
+              Back to post
             </Button>
-            <Button
-              variant="outline"
-              height="28px"
-              onClick={() => setSelectedFile("")}
-            >
+            <Button height="28px" onClick={() => setSelectedFile("")}>
               Remove
             </Button>
           </Stack>
@@ -39,27 +40,28 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
           justify="center"
           align="center"
           p={20}
-          border="1px dashed"
+          border="2px dashed"
           borderColor="gray.200"
           width="100%"
-          borderRadius={4}
+          borderRadius={10}
         >
           <Button
             variant="outline"
-            height="28px"
-            onClick={() => selectedFileRef.current?.click()}
+            height="26px"
+            onClick={() => fileInputRef.current?.click()}
           >
             Upload
           </Button>
           <Input
-            ref={selectedFileRef}
             type="file"
+            ref={fileInputRef}
             hidden
-            onChange={onSelectImage}
+            onChange={onSelectedImage}
           />
         </Flex>
       )}
     </Flex>
   );
 };
+
 export default ImageUpload;

@@ -1,10 +1,10 @@
 import { Flex, Image } from "@chakra-ui/react";
 import React from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { defaultMenuItem } from "../../atoms/directoryMenuAtom";
+import { defaultMenuItem } from "../../atoms/directoryMenuItem";
 import { auth } from "../../firebase/clientApp";
 import useDirectory from "../../hooks/useDirectory";
-import Directory from "./Directory/Directory";
+import { Directory } from "./Directory/Directory";
 import RightContent from "./RightContent/RightContent";
 import SearchInput from "./SearchInput";
 
@@ -14,24 +14,25 @@ const Navbar: React.FC = () => {
 
   return (
     <Flex
+      gap={2}
       bg="white"
-      height="44px"
+      h="50px"
       padding="6px 12px"
-      justify={{ md: "space-between" }}
+      align="center"
+      justifyContent={user ? "space-between" : "center"}
     >
       <Flex
         align="center"
-        width={{ base: "48px", md: "auto" }}
-        mr={{ base: 0, md: 2 }}
+        justify="center"
         cursor="pointer"
         onClick={() => onSelectMenuItem(defaultMenuItem)}
       >
-        <Image src="/images/redditFace.svg" alt="reddit logo" height="30px" />
+        <Image src="/images/redditFace.svg" h="30px" alt="Reddit Face logo" />
         <Image
           src="/images/redditText.svg"
-          alt="reddit logo"
-          height="46px"
+          h="46px"
           display={{ base: "none", md: "unset" }}
+          alt="Reddit text logo"
         />
       </Flex>
       {user && <Directory />}

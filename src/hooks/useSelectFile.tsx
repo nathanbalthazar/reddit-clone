@@ -1,12 +1,13 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 const useSelectFile = () => {
-  const [selectedFile, setSelectedFile] = useState<string>();
-
-  const onSelectFile = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const [selectedFile, setSelectedFile] = useState<string>("");
+  // handler for image change
+  const onSelectedImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const reader = new FileReader();
-    if (event.target.files?.[0]) {
-      reader.readAsDataURL(event.target.files?.[0]);
+
+    if (e.target.files?.[0]) {
+      reader.readAsDataURL(e.target.files[0]);
     }
 
     reader.onload = (readerEvent) => {
@@ -15,11 +16,11 @@ const useSelectFile = () => {
       }
     };
   };
-
   return {
     selectedFile,
     setSelectedFile,
-    onSelectFile,
+    onSelectedImage,
   };
 };
+
 export default useSelectFile;

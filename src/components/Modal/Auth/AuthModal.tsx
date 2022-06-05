@@ -1,14 +1,12 @@
 import {
-  useDisclosure,
-  Button,
+  Divider,
+  Flex,
   Modal,
-  ModalOverlay,
+  ModalBody,
+  ModalCloseButton,
   ModalContent,
   ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-  ModalFooter,
-  Flex,
+  ModalOverlay,
   Text,
 } from "@chakra-ui/react";
 import React, { useEffect } from "react";
@@ -21,57 +19,64 @@ import OAuthButtons from "./OAuthButtons";
 import ResetPassword from "./ResetPassword";
 
 const AuthModal: React.FC = () => {
-  const [modalState, setModalState] = useRecoilState(authModalState);
+  const [ModalState, setModalState] = useRecoilState(authModalState);
+
   const [user, loading, error] = useAuthState(auth);
 
-  const handleClose = () => {
+  const handleClose = () =>
     setModalState((prev) => ({
       ...prev,
       open: false,
     }));
-  };
 
   useEffect(() => {
     if (user) handleClose();
-    console.log("user", user);
   }, [user]);
 
   return (
     <>
-      <Modal isOpen={modalState.open} onClose={handleClose}>
-        <ModalOverlay />
-        <ModalContent>
+      <Modal
+        isOpen={ModalState.open}
+        onClose={handleClose}
+        closeOnOverlayClick={false}
+      >
+        <ModalOverlay bg="none" backdropFilter="auto" backdropBlur="3px" />
+        <ModalContent boxShadow="2xl">
           <ModalHeader textAlign="center">
-            {modalState.view === "login" && "Login"}
-            {modalState.view === "signup" && "Sign Up"}
-            {modalState.view === "resetPassword" && "Reset Password"}
+            {ModalState.view === "login" && "Login"}
+            {ModalState.view === "signup" && "Sign Up"}
+            {ModalState.view === "resetPassword" && "Reset Password"}
           </ModalHeader>
-          <ModalCloseButton />
+          <ModalCloseButton m={2} />
           <ModalBody
             display="flex"
             flexDirection="column"
             alignItems="center"
             justifyContent="center"
-            pb={6}
+            pb={10}
           >
             <Flex
               direction="column"
               align="center"
               justify="center"
-              width="70%"
+              width={{ base: "80%", md: "70%" }}
             >
-              {modalState.view === "login" || modalState.view === "signup" ? (
+              {ModalState.view === "login" || ModalState.view === "signup" ? (
                 <>
-                <OAuthButtons />
-                  <Text color="gray.500" fontWeight={700}>
-                    OR
-                  </Text>
+                  <OAuthButtons />
+                  <Flex direction="row" width="100%" align="center">
+                    <Divider />
+                    <Text color="gray.500" mx={2} fontWeight="700">
+                      OR
+                    </Text>
+                    <Divider />
+                  </Flex>
+                  {/* Login and Singup inputs  */}
                   <AuthInputs />
                 </>
               ) : (
                 <ResetPassword />
               )}
-              
             </Flex>
           </ModalBody>
         </ModalContent>
@@ -79,4 +84,5 @@ const AuthModal: React.FC = () => {
     </>
   );
 };
+
 export default AuthModal;

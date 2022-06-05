@@ -1,20 +1,27 @@
 import { Flex } from "@chakra-ui/react";
+import { AnimatePresence } from "framer-motion";
 import React from "react";
 import { useRecoilValue } from "recoil";
 import { authModalState } from "../../../atoms/authModalAtom";
 import Login from "./Login";
-import SignUp from "./SignUp";
+import Signup from "./Signup";
 
-type AuthInputsProps = {};
-
-const AuthInputs: React.FC<AuthInputsProps> = () => {
-  const modalState = useRecoilValue(authModalState);
-
+const AuthInputs: React.FC = () => {
+  const ModalState = useRecoilValue(authModalState);
   return (
-    <Flex direction="column" align="center" width="100%" mt={4}>
-      {modalState.view === "login" && <Login />}
-      {modalState.view === "signup" && <SignUp />}
+    <Flex
+      width="100%"
+      mt={4}
+      direction="column"
+      align="center"
+      justify="center"
+    >
+      <AnimatePresence>
+        {ModalState.view === "login" && <Login />}
+        {ModalState.view === "signup" && <Signup />}
+      </AnimatePresence>
     </Flex>
   );
 };
+
 export default AuthInputs;

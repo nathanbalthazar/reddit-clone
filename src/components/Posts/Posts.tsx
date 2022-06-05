@@ -1,77 +1,82 @@
-import { Stack } from "@chakra-ui/react";
+import { Skeleton, Stack } from "@chakra-ui/react";
 import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
+import { AnimatePresence } from "framer-motion";
 import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { Community } from "../../atoms/CommunitiesAtom";
+import { Community } from "../../atoms/communitiesAtom";
 import { Post } from "../../atoms/postsAtom";
 import { auth, firestore } from "../../firebase/clientApp";
-import usePosts from "../../hooks/usePosts";
+import usePostsData from "../../hooks/usePostsData";
+import Loading from "./Loading";
 import PostItem from "./PostItem";
-import PostLoader from "./PostLoader";
 
-type PostsProps = {
+interface IPostsProps {
   communityData: Community;
-};
+}
 
-const Posts: React.FC<PostsProps> = ({ communityData }) => {
+const Posts: React.FunctionComponent<IPostsProps> = ({ communityData }) => {
   const [user] = useAuthState(auth);
   const [loading, setLoading] = useState(false);
   const {
     postStateValue,
     setPostStateValue,
     onVote,
-    onDeletePost,
     onSelectPost,
-  } = usePosts();
+    onDeletePost,
+  } = usePostsData();
 
   const getPosts = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
-      const postQuery = query(
+      const postsQuery = query(
         collection(firestore, "posts"),
         where("communityId", "==", communityData.id),
         orderBy("createdAt", "desc")
       );
-      const postDocs = await getDocs(postQuery);
-
-      const posts = postDocs.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      const postsSnapshot = await getDocs(postsQuery);
+      const posts = postsSnapshot.docs.map((post) => ({
+        id: post.id,
+        ...post.data(),
+      }));
       setPostStateValue((prev) => ({
         ...prev,
         posts: posts as Post[],
       }));
     } catch (error: any) {
-      console.log("getPost error", error.message);
+      console.log("getPosts error", error.message);
     }
     setLoading(false);
   };
-
   useEffect(() => {
     getPosts();
   }, [communityData]);
-
   return (
     <>
       {loading ? (
-        <PostLoader />
+        <Loading />
       ) : (
         <Stack>
-          {postStateValue.posts.map((item) => (
-            <PostItem
-              key={item.id}
-              post={item}
-              userIsCreator={user?.uid === item.creatorId}
-              userVoteValue={
-                postStateValue.postVotes.find((vote) => vote.postId === item.id)
-                  ?.voteValue
-              }
-              onVote={onVote}
-              onSelectPost={onSelectPost}
-              onDeletePost={onDeletePost}
-            />
-          ))}
+          <AnimatePresence initial={true}>
+            {postStateValue.posts.map((post) => (
+              <PostItem
+                key={post.id}
+                post={post}
+                userIsCreator={user?.uid === post.creatorId}
+                userVoteValue={
+                  postStateValue.postVotes.find(
+                    (vote) => vote.postId === post.id
+                  )?.voteValue
+                }
+                onVote={onVote}
+                onSelectPost={onSelectPost}
+                onDeletePost={onDeletePost}
+              />
+            ))}
+          </AnimatePresence>
         </Stack>
       )}
     </>
   );
 };
+
 export default Posts;

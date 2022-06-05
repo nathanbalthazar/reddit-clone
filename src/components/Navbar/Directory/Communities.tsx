@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import CreateCommunityModal from "../../Modal/CreateCommunity/CreateComunnityModal";
 import { GrAdd } from "react-icons/gr";
 import { useRecoilValue } from "recoil";
-import { communityState } from "../../../atoms/CommunitiesAtom";
+import { communityState } from "../../../atoms/communitiesAtom";
 import MenuListItem from "./MenuListItem";
 import { FaReddit } from "react-icons/fa";
 

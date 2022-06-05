@@ -1,16 +1,17 @@
 import React from "react";
 import Navbar from "../Navbar/Navbar";
 
-interface Props {
-    children: JSX.Element
+interface LayoutProps {
+  children: JSX.Element[] | JSX.Element;
 }
 
-const Layout: React.FC<Props> = ( {children} ) => {
+const Layout = ({ children }: LayoutProps) => {
   return (
     <>
-        <Navbar />
+      <Navbar />
       <main>{children}</main>
     </>
   );
 };
+
 export default Layout;
