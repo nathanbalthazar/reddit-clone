@@ -55,7 +55,7 @@ const PostItem: React.FC<PostItemContentProps> = ({
 }) => {
   const [loadingImage, setLoadingImage] = useState(true);
   const [loadingDelete, setLoadingDelete] = useState(false);
-  const singlePostView = !onSelectPost; // function not passed to [pid]
+  const singlePostView = !onSelectPost;
 
   const handleDelete = async (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>
@@ -68,16 +68,10 @@ const PostItem: React.FC<PostItemContentProps> = ({
 
       console.log("Post successfully deleted");
 
-      // Could proably move this logic to onDeletePost function
       if (router) router.back();
     } catch (error: any) {
       console.log("Error deleting post", error.message);
-      /**
-       * Don't need to setLoading false if no error
-       * as item will be removed from DOM
-       */
       setLoadingDelete(false);
-      // setError
     }
   };
 
@@ -165,8 +159,6 @@ const PostItem: React.FC<PostItemContentProps> = ({
                 <Skeleton height="200px" width="100%" borderRadius={4} />
               )}
               <Image
-                // width="80%"
-                // maxWidth="500px"
                 maxHeight="460px"
                 src={post.imageURL}
                 display={loadingImage ? "none" : "unset"}

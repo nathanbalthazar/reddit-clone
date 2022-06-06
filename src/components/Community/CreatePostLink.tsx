@@ -1,5 +1,4 @@
 import { Flex, Icon, Input } from "@chakra-ui/react";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
 import { BsLink45Deg } from "react-icons/bs";
@@ -13,13 +12,11 @@ const CreatePostLink: React.FC<CreatePostProps> = () => {
   const router = useRouter();
   const { toggleMenuOpen } = useDirectory();
   const onClick = () => {
-    // Could check for user to open auth modal before redirecting to submit
     const { community } = router.query;
     if (community) {
       router.push(`/r/${router.query.community}/submit`);
       return;
     }
-    // Open directory menu to select community to post to
     toggleMenuOpen();
   };
   return (

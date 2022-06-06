@@ -55,7 +55,6 @@ const Comments: React.FC<CommentsProps> = ({
     try {
       const batch = writeBatch(firestore);
 
-      // Create comment document
       const commentDocRef = doc(collection(firestore, "comments"));
       batch.set(commentDocRef, {
         postId: selectedPost.id,
@@ -68,7 +67,6 @@ const Comments: React.FC<CommentsProps> = ({
         createdAt: serverTimestamp(),
       } as Comment);
 
-      // Update post numberOfComments
       batch.update(doc(firestore, "posts", selectedPost.id), {
         numberOfComments: increment(1),
       });
@@ -93,7 +91,6 @@ const Comments: React.FC<CommentsProps> = ({
         ...prev,
       ]);
 
-      // Fetch posts again to update number of comments
       setPostState((prev) => ({
         ...prev,
         selectedPost: {
@@ -133,10 +130,8 @@ const Comments: React.FC<CommentsProps> = ({
         }));
 
         setComments((prev) => prev.filter((item) => item.id !== comment.id));
-        // return true;
       } catch (error: any) {
         console.log("Error deletig comment", error.message);
-        // return false;
       }
       setDeleteLoading("");
     },

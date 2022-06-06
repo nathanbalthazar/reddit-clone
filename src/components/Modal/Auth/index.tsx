@@ -1,22 +1,17 @@
-import React, { useEffect } from "react";
 import {
-  Flex,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
+  Flex, ModalBody,
+  ModalCloseButton, ModalHeader
 } from "@chakra-ui/react";
+import React, { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { authModalState } from "../../../atoms/authModalAtom";
 import { userState } from "../../../atoms/userAtom";
 import { auth } from "../../../firebase/clientApp";
+import ModalWrapper from "../ModalWrapper";
 import AuthInputs from "./Inputs";
 import OAuthButtons from "./OAuthButtons";
 import ResetPassword from "./ResetPassword";
-import ModalWrapper from "../ModalWrapper";
 
 type AuthModalProps = {};
 
@@ -31,10 +26,6 @@ const AuthModal: React.FC<AuthModalProps> = () => {
   const currentUser = useRecoilValue(userState);
   const [user, error] = useAuthState(auth);
 
-  // Can implement at the end
-  // useEffect(() => {
-  //   if (currentUser) handleClose();
-  // }, [currentUser]);
   const toggleView = (view: string) => {
     setModalState({
       ...modalState,
@@ -76,25 +67,6 @@ const AuthModal: React.FC<AuthModalProps> = () => {
           ) : (
             <ResetPassword toggleView={toggleView} />
           )}
-          {/* // Will implement at end of tutorial */}
-          {/* {user && !currentUser && (
-                <>
-                  <Spinner size="lg" mt={2} mb={2} />
-                  <Text fontSize="8pt" textAlign="center" color="blue.500">
-                    You are logged in. You will be redirected soon
-                  </Text>
-                </>
-              )} */}
-          {/* {false ? (
-                <Flex
-                  direction="column"
-                  justifyContent="center"
-                  alignItems="center"
-                  height="100%"
-                >
-                </Flex>
-              ) : (
-              )} */}
         </Flex>
       </ModalBody>
     </ModalWrapper>

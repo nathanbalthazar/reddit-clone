@@ -23,22 +23,6 @@ const CommunityPage: NextPage<CommunityPageProps> = ({ communityData }) => {
   const [communityStateValue, setCommunityStateValue] =
     useRecoilState(communityState);
 
-  // useEffect(() => {
-  //   // First time the user has navigated to this community page during session - add to cache
-  //   const firstSessionVisit =
-  //     !communityStateValue.visitedCommunities[communityData.id!];
-
-  //   if (firstSessionVisit) {
-  //     setCommunityStateValue((prev) => ({
-  //       ...prev,
-  //       visitedCommunities: {
-  //         ...prev.visitedCommunities,
-  //         [communityData.id!]: communityData,
-  //       },
-  //     }));
-  //   }
-  // }, [communityData]);
-
   useEffect(() => {
     setCommunityStateValue((prev) => ({
       ...prev,
@@ -46,7 +30,6 @@ const CommunityPage: NextPage<CommunityPageProps> = ({ communityData }) => {
     }));
   }, [communityData]);
 
-  // Community was not found in the database
   if (!communityData) {
     return <CommunityNotFound />;
   }
@@ -55,7 +38,6 @@ const CommunityPage: NextPage<CommunityPageProps> = ({ communityData }) => {
     <>
       <Header communityData={communityData} />
       <PageContentLayout>
-        {/* Left Content */}
         <>
           <CreatePostLink />
           <Posts
@@ -64,7 +46,6 @@ const CommunityPage: NextPage<CommunityPageProps> = ({ communityData }) => {
             loadingUser={loadingUser}
           />
         </>
-        {/* Right Content */}
         <>
           <About communityData={communityData} />
         </>
@@ -89,13 +70,12 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       props: {
         communityData: communityDoc.exists()
           ? JSON.parse(
-              safeJsonStringify({ id: communityDoc.id, ...communityDoc.data() }) // needed for dates
+              safeJsonStringify({ id: communityDoc.id, ...communityDoc.data() })
             )
           : "",
       },
     };
   } catch (error) {
-    // Could create error page here
     console.log("getServerSideProps error - [community]", error);
   }
 }
