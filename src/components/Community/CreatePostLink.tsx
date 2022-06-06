@@ -14,13 +14,13 @@ const CreatePostLink: React.FC<CreatePostProps> = () => {
   const { toggleMenuOpen } = useDirectory();
   const onClick = () => {
     // Could check for user to open auth modal before redirecting to submit
-    const { communityId } = router.query;
-    if (communityId) {
-      router.push(`/r/${communityId}/submit`);
+    const { community } = router.query;
+    if (community) {
+      router.push(`/r/${router.query.community}/submit`);
       return;
     }
     // Open directory menu to select community to post to
-     toggleMenuOpen();
+    toggleMenuOpen();
   };
   return (
     <Flex

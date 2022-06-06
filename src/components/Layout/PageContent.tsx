@@ -1,30 +1,36 @@
-import { Flex } from "@chakra-ui/react";
-import * as React from "react";
+import React from "react";
+import { Box, Flex } from "@chakra-ui/react";
 
-export interface IPageContentProps {
-  //   children: JSX.Element[] | JSX.Element;
-  children: React.ReactNode[] | React.ReactNode;
+interface PageContentLayoutProps {
+  maxWidth?: string;
 }
 
-export default function PageContent({ children }: IPageContentProps) {
+// Assumes array of two children are passed
+const PageContentLayout: React.FC<PageContentLayoutProps> = ({
+  children,
+  maxWidth,
+}) => {
   return (
     <Flex justify="center" p="16px 0px">
-      <Flex width="95%" maxWidth="860px" justify="center">
-        {/* Left hand side  */}
+      <Flex width="95%" justify="center" maxWidth={maxWidth || "860px"}>
         <Flex
           direction="column"
-          width={["100%", "65%"]}
-          flexGrow={[0, 1]}
-          mr={[0, 6]}
+          width={{ base: "100%", md: "65%" }}
+          mr={{ base: 0, md: 6 }}
         >
-          {" "}
           {children && children[0 as keyof typeof children]}
         </Flex>
-        {/* Right hande side  */}
-        <Flex direction="column" display={["none", "flex"]} flexGrow={1}>
+        {/* Right Content */}
+        <Box
+          display={{ base: "none", md: "flex" }}
+          flexDirection="column"
+          flexGrow={1}
+        >
           {children && children[1 as keyof typeof children]}
-        </Flex>
+        </Box>
       </Flex>
     </Flex>
   );
-}
+};
+
+export default PageContentLayout;

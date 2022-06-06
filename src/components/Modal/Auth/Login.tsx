@@ -1,124 +1,99 @@
-import { Button, Flex, Input, Text } from "@chakra-ui/react";
-import { motion } from "framer-motion";
 import React, { useState } from "react";
-import { useSetRecoilState } from "recoil";
-import { authModalState } from "../../../atoms/authModalAtom";
+import { Button, Flex, Text } from "@chakra-ui/react";
 import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
+import { ModalView } from "../../../atoms/authModalAtom";
 import { auth } from "../../../firebase/clientApp";
-import { firebaseErrors } from "../../../firebase/firebaseErrors";
+import { FIREBASE_ERRORS } from "../../../firebase/errors";
+import InputItem from "../../Layout/InputItem";
 
-const variants = {
-  enter: { opacity: 0, x: 50 },
-  visible: { opacity: 1, x: 0 },
-  exit: { opacity: 0, x: 50 },
+type LoginProps = {
+  toggleView: (view: ModalView) => void;
 };
 
-const Login: React.FC = () => {
-  const setModalState = useSetRecoilState(authModalState);
-  const [login, setLogin] = useState({
+const Login: React.FC<LoginProps> = ({ toggleView }) => {
+  const [form, setForm] = useState({
     email: "",
     password: "",
   });
+  const [formError, setFormError] = useState("");
 
-  const [loginError, setLoginError] = useState("");
-
-  const [signInWithEmailAndPassword, user, loading, error] =
+  const [signInWithEmailAndPassword, _, loading, authError] =
     useSignInWithEmailAndPassword(auth);
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    //Update input Data
-    setLogin((prev) => ({
+  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (formError) setFormError("");
+    if (!form.email.includes("@")) {
+      return setFormError("Please enter a valid email");
+    }
+
+    // Valid form inputs
+    signInWithEmailAndPassword(form.email, form.password);
+  };
+
+  const onChange = ({
+    target: { name, value },
+  }: React.ChangeEvent<HTMLInputElement>) => {
+    setForm((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [name]: value,
     }));
   };
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setLoginError("");
-    signInWithEmailAndPassword(login.email, login.password);
-  };
+
   return (
-    <motion.div
-      initial="enter"
-      animate="visible"
-      exit="exit"
-      variants={variants}
-    >
-      <form onSubmit={onSubmit}>
-        <Input
-          required
-          name="email"
-          placeholder="Email"
-          type="email"
-          mb={3}
-          onChange={onChange}
-          _placeholder={{ color: "gray.500" }}
-          _hover={{ bg: "white", border: "1px solid", borderColor: "blue.500" }}
-          _focus={{
-            outline: "none",
-            bg: "white",
-            border: "1px solid",
-            borderColor: "blue.500",
-          }}
-        />
-        <Input
-          required
-          name="password"
-          placeholder="Password"
-          type="password"
-          mb={3}
-          onChange={onChange}
-          _placeholder={{ color: "gray.500" }}
-          _hover={{ bg: "white", border: "1px solid", borderColor: "blue.500" }}
-          _focus={{
-            outline: "none",
-            bg: "white",
-            border: "1px solid",
-            borderColor: "blue.500",
-          }}
-        />
-        <Text textAlign="center" color="red.500" fontSize="10pt" mb="5px">
-          {firebaseErrors[error?.message as keyof typeof firebaseErrors]}
+    <form onSubmit={onSubmit}>
+      <InputItem
+        name="email"
+        placeholder="email"
+        type="text"
+        mb={2}
+        onChange={onChange}
+      />
+      <InputItem
+        name="password"
+        placeholder="password"
+        type="password"
+        onChange={onChange}
+      />
+      <Text textAlign="center" mt={2} fontSize="10pt" color="red">
+        {formError ||
+          FIREBASE_ERRORS[authError?.message as keyof typeof FIREBASE_ERRORS]}
+      </Text>
+      <Button
+        width="100%"
+        height="36px"
+        mb={2}
+        mt={2}
+        type="submit"
+        isLoading={loading}
+      >
+        Log In
+      </Button>
+      <Flex justifyContent="center" mb={2}>
+        <Text fontSize="9pt" mr={1}>
+          Forgot your password?
         </Text>
-        <Button type="submit" width="100%" h="36px" mb={2} isLoading={loading}>
-          Submit
-        </Button>
-        <Flex justifyContent="center" mb={2}>
-          <Text fontSize="9pt" mr={1}>
-            Forgot your password ?
-          </Text>
-          <Text
-            fontSize="9pt"
-            color="blue.500"
-            cursor="pointer"
-            onClick={() => {
-              setModalState((prev) => ({
-                ...prev,
-                view: "resetPassword",
-              }));
-            }}
-          >
-            Reset
-          </Text>
-        </Flex>
-        <Flex fontSize="10pt" gap={1} justify="center">
-          <Text>New here ?</Text>
-          <Text
-            color="blue.600"
-            fontWeight="700"
-            cursor="pointer"
-            onClick={() =>
-              setModalState((prev) => ({
-                ...prev,
-                view: "signup",
-              }))
-            }
-          >
-            SIGN UP
-          </Text>
-        </Flex>
-      </form>
-    </motion.div>
+        <Text
+          fontSize="9pt"
+          color="blue.500"
+          cursor="pointer"
+          onClick={() => toggleView("resetPassword")}
+        >
+          Reset
+        </Text>
+      </Flex>
+      <Flex fontSize="9pt" justifyContent="center">
+        <Text mr={1}>New here?</Text>
+        <Text
+          color="blue.500"
+          fontWeight={700}
+          cursor="pointer"
+          onClick={() => toggleView("signup")}
+        >
+          SIGN UP
+        </Text>
+      </Flex>
+    </form>
   );
 };
 export default Login;

@@ -1,51 +1,31 @@
 import { Button, Flex, Image, Text } from "@chakra-ui/react";
-import { User } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
-import React, { useEffect } from "react";
-import { useSignInWithGoogle } from "react-firebase-hooks/auth";
-import { auth, firestore } from "../../../firebase/clientApp";
-import { firebaseErrors } from "../../../firebase/firebaseErrors";
+import React from "react";
+import { useAuthState, useSignInWithGoogle } from "react-firebase-hooks/auth";
+import { auth } from "../../../firebase/clientApp";
 
-const OAuthButtons: React.FC = () => {
-  const [signInWithGoogle, userCred, loading, error] =
-    useSignInWithGoogle(auth);
+type OAuthButtonsProps = {};
 
-  const createUserDocument = async (user: User) => {
-    const userDocRef = doc(firestore, "users", user.uid);
-    await setDoc(userDocRef, JSON.parse(JSON.stringify(user)));
-  };
-
-  useEffect(() => {
-    if (userCred) {
-      createUserDocument(userCred.user);
-    }
-  }, [userCred]);
+const OAuthButtons: React.FC<OAuthButtonsProps> = () => {
+  const [signInWithGoogle, _, loading, error] = useSignInWithGoogle(auth);
 
   return (
-    <Flex direction="column" width="100%" mb={4}>
+    <Flex direction="column" mb={4} width="100%">
       <Button
         variant="oauth"
         mb={2}
-        isLoading={loading}
         onClick={() => signInWithGoogle()}
+        isLoading={loading}
       >
-        <Image
-          src="/images/googlelogo.png"
-          alt="Google logo"
-          width="20px"
-          mr={2}
-        />
-        Continue with google
+        <Image src="/images/googlelogo.png" height="20px" mr={4} />
+        Continue with Google
       </Button>
-      <Button>Some other provider</Button>
+      <Button variant="oauth">Some Other Provider</Button>
       {error && (
-        <Text color="red.500" textAlign="center" fontSize="10pt" my="5px">
-          {" "}
-          {firebaseErrors[error.message as keyof typeof firebaseErrors]}
+        <Text textAlign="center" fontSize="10pt" color="red" mt={2}>
+          {error}
         </Text>
       )}
     </Flex>
   );
 };
-
 export default OAuthButtons;
