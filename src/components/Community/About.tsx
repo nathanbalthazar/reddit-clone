@@ -18,8 +18,7 @@ import { FaReddit } from "react-icons/fa";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { RiCakeLine } from "react-icons/ri";
 import { useSetRecoilState } from "recoil";
-import { Community, } from "../../atoms/communitiesAtom";
-import {communityState} from '../../atoms/communitiesAtom'
+import { Community, communityState as C } from "../../atoms/communitiesAtom";
 import { auth, firestore, storage } from "../../firebase/clientApp";
 
 type AboutProps = {
@@ -38,7 +37,7 @@ const About: React.FC<AboutProps> = ({
   const [user] = useAuthState(auth); 
   const router = useRouter();
   const selectFileRef = useRef<HTMLInputElement>(null);
-  const setCommunityStateValue = useSetRecoilState(communityState);
+  const setCommunityStateValue = useSetRecoilState(C);
 
   const [selectedFile, setSelectedFile] = useState<string>();
 
