@@ -15,6 +15,7 @@
     "@emotion/styled": "^11",
     "@fontsource/open-sans": "^4.5.8",
     "@fontsource/raleway": "^4.5.5",
+    "@types/atom": "^1.40.11",
     "@types/safe-json-stringify": "^1.1.2",
     "atom": "^1.4.1",
     "firebase": "^9.6.10",
