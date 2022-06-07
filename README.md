@@ -1,34 +1,104 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+<h1 align="center" >
+  Reddit Clone  <image src="https://logodownload.org/wp-content/uploads/2018/02/reddit-logo-16.png" width="45px" align="center" />
+</h1>
+  
+![](https://iharsh234.github.io/WebApp/images/demo/demo_landing.JPG)
 
-## Getting Started
+<table>
+<tr>
+<td>
+  Reddit é uma rede social americana baseada uma comunidade de fóruns onde os usuários podem compartilhar textos, histórias, fotos, vídeos, GIFs e interagir podendo comentar e votar no conteúdo.
+</td>
+</tr>
+</table>
 
-First, run the development server:
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+## Demo
+Você pode ver o site clicando no link da demo:  https://reddit-clone-next.vercel.app/
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## Site
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+### Landing Page
+Currently it is working on all NSE (India) Stocks, BSE (India) Stocks Symbol will be added soon.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+![](https://iharsh234.github.io/WebApp/images/demo/web_app_face.JPG)
 
-## Learn More
+### Query Filled Form
+![](https://iharsh234.github.io/WebApp/images/demo/demo_query.JPG)
 
-To learn more about Next.js, take a look at the following resources:
+### Charts
+![](https://iharsh234.github.io/WebApp/images/demo/demo_chart1.JPG)
+![](https://iharsh234.github.io/WebApp/images/demo/demo_chart2.JPG)
+![](https://iharsh234.github.io/WebApp/images/demo/demo_chart3.JPG)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## Mobile support
+The WebApp is compatible with devices of all sizes and all OS's, and consistent improvements are being made.
 
-## Deploy on Vercel
+![](https://iharsh234.github.io/WebApp/images/demo/mobile.png)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+
+## [Usage](https://iharsh234.github.io/WebApp/) 
+
+### Development
+Want to contribute? Great!
+
+To fix a bug or enhance an existing module, follow these steps:
+
+- Fork the repo
+- Create a new branch (`git checkout -b improve-feature`)
+- Make the appropriate changes in the files
+- Add changes to reflect the changes made
+- Commit your changes (`git commit -am 'Improve feature'`)
+- Push to the branch (`git push origin improve-feature`)
+- Create a Pull Request 
+
+### Bug / Feature Request
+
+If you find a bug (the website couldn't handle the query and / or gave undesired results), kindly open an issue [here](https://github.com/iharsh234/WebApp/issues/new) by including your search query and the expected result.
+
+If you'd like to request a new function, feel free to do so by opening an issue [here](https://github.com/iharsh234/WebApp/issues/new). Please include sample queries and their corresponding results.
+
+## :wrench: Tecnologias | Ferramentas | Recursos
+
+Esse projeto foi desenvolvido utilizando os seguintes recursos:
+
+Geral
+
+- [ESLint](https://eslint.org/)
+- [Visual Studio Code](https://code.visualstudio.com/)
+
+Server
+
+- [Firebase](https://firebase.google.com)
+- [React-Firebase-hooks](https://github.com/CSFrequency/react-firebase-hooks)
+- [Firebase-Cloud-Functions](https://github.com/firebase/functions-samples)
+- [Nookies](https://github.com/maticzav/nookies)
+- [Json-stringify-safe](https://www.npmjs.com/package/json-stringify-safe)
+
+Frontend
+
+- [Chakra-UI](https://chakra-ui.com/)
+- [Next](https://nextjs.org/)
+- [React](https://pt-br.reactjs.org/)
+- [React-dom](https://www.npmjs.com/package/react-dom)
+- [React-icons](https://react-icons.github.io/react-icons/)
+- [Recoil](https://recoiljs.org/)
+- [Moment](https://momentjs.com/)
+- [Typescript](https://www.typescriptlang.org/)
+
+## To-do
+- Add BSE (India) Symbol to the current App.
+- Decide comparison models of Stocks. (suggestions are most welcome).
+- Another WebApp, capable of comparing at least 10 stocks.
+
+### :memo: License
+
+Esse projeto está sob MIT license. Veja [LICENSE](https://github.com/nathanbalthazar/reddit-clone/blob/main/LICENSE) para mais informações.
+
+---
+
+Made with 💜 by [Nathan Balthazar](https://nathan-balthazar.netlify.app/) 
