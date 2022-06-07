@@ -18,7 +18,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, firestore, storage } from "../../firebase/clientApp";
-import { Community, communityState } from "../../atoms/communitiesAtom";
+import { Community, communityState } from "../../../src/atoms/communitiesAtom";
 import moment from "moment";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { FaReddit } from "react-icons/fa";
