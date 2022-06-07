@@ -18,7 +18,8 @@ import { FaReddit } from "react-icons/fa";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { RiCakeLine } from "react-icons/ri";
 import { useSetRecoilState } from "recoil";
-import { Community, communityState } from "../../atoms/communitiesAtom";
+import { Community, } from "../../atoms/communitiesAtom";
+import {communityState} from '../../atoms/communitiesAtom'
 import { auth, firestore, storage } from "../../firebase/clientApp";
 
 type AboutProps = {
