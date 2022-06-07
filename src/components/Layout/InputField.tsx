@@ -13,7 +13,7 @@ const InputField: React.FC<InputFieldProps> = ({
   name,
   placeholder,
   type,
-  isRequired,
+  isRequired, // not sure if will need this
   mb,
 }) => {
   return (

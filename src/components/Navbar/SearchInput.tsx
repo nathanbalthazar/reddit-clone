@@ -1,7 +1,9 @@
-import { SearchIcon } from "@chakra-ui/icons";
-import { Flex, Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
-import { User } from "firebase/auth";
 import React from "react";
+import { Flex, InputGroup, InputLeftElement, Input } from "@chakra-ui/react";
+import { SearchIcon } from "@chakra-ui/icons";
+import { auth } from "firebase-admin";
+import { user } from "firebase-functions/v1/auth";
+import { User } from "firebase/auth";
 
 type SearchInputProps = {
   user: User;
@@ -19,6 +21,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ user }) => {
         <InputLeftElement
           pointerEvents="none"
           color="gray.400"
+          // children={<SearchIcon mb={2} />}
         >
           <SearchIcon mb={2} />
         </InputLeftElement>

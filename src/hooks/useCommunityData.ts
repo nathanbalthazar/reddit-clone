@@ -13,6 +13,7 @@ import {
 import { auth, firestore } from "../firebase/clientApp";
 import { getMySnippets } from "../helpers/firestore";
 
+// Add ssrCommunityData near end as small optimization
 const useCommunityData = (ssrCommunityData?: boolean) => {
   const [user] = useAuthState(auth);
   const router = useRouter();
@@ -46,6 +47,8 @@ const useCommunityData = (ssrCommunityData?: boolean) => {
   };
 
   const getCommunityData = async (communityId: string) => {
+    // this causes weird memory leak error - not sure why
+    // setLoading(true);
     console.log("GETTING COMMUNITY DATA");
 
     try {
@@ -55,6 +58,16 @@ const useCommunityData = (ssrCommunityData?: boolean) => {
         communityId as string
       );
       const communityDoc = await getDoc(communityDocRef);
+      // setCommunityStateValue((prev) => ({
+      //   ...prev,
+      //   visitedCommunities: {
+      //     ...prev.visitedCommunities,
+      //     [communityId as string]: {
+      //       id: communityDoc.id,
+      //       ...communityDoc.data(),
+      //     } as Community,
+      //   },
+      // }));
       setCommunityStateValue((prev) => ({
         ...prev,
         currentCommunity: {
@@ -94,7 +107,11 @@ const useCommunityData = (ssrCommunityData?: boolean) => {
         imageURL: community.imageURL || "",
       };
       batch.set(
-        doc(firestore, `users/${user?.uid}/communitySnippets`, community.id),
+        doc(
+          firestore,
+          `users/${user?.uid}/communitySnippets`,
+          community.id // will for sure have this value at this point
+        ),
         newSnippet
       );
 
@@ -102,8 +119,10 @@ const useCommunityData = (ssrCommunityData?: boolean) => {
         numberOfMembers: increment(1),
       });
 
+      // perform batch writes
       await batch.commit();
 
+      // Add current community to snippet
       setCommunityStateValue((prev) => ({
         ...prev,
         mySnippets: [...prev.mySnippets, newSnippet],
@@ -140,7 +159,21 @@ const useCommunityData = (ssrCommunityData?: boolean) => {
     setLoading(false);
   };
 
+  // useEffect(() => {
+  //   if (ssrCommunityData) return;
+  //   const { community } = router.query;
+  //   if (community) {
+  //     const communityData =
+  //       communityStateValue.visitedCommunities[community as string];
+  //     if (!communityData) {
+  //       getCommunityData(community as string);
+  //       return;
+  //     }
+  //   }
+  // }, [router.query]);
+
   useEffect(() => {
+    // if (ssrCommunityData) return;
     const { community } = router.query;
     if (community) {
       const communityData = communityStateValue.currentCommunity;
@@ -149,13 +182,20 @@ const useCommunityData = (ssrCommunityData?: boolean) => {
         getCommunityData(community as string);
         return;
       }
+      // console.log("this is happening", communityStateValue);
     } else {
+      /**
+       * JUST ADDED THIS APRIL 24
+       * FOR NEW LOGIC OF NOT USING visitedCommunities
+       */
       setCommunityStateValue((prev) => ({
         ...prev,
         currentCommunity: defaultCommunity,
       }));
     }
   }, [router.query, communityStateValue.currentCommunity]);
+
+  // console.log("LOL", communityStateValue);
 
   return {
     communityStateValue,

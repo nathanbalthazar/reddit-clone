@@ -20,5 +20,6 @@ export const theme = extendTheme({
   },
   components: {
     Button,
+    // Input, // not working for some reason - come back to this
   },
 });

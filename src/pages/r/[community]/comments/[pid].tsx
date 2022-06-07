@@ -20,6 +20,7 @@ const PostPage: React.FC<PostPageProps> = () => {
   const { community, pid } = router.query;
   const { communityStateValue } = useCommunityData();
 
+  // Need to pass community data here to see if current post [pid] has been voted on
   const {
     postStateValue,
     setPostStateValue,
@@ -40,12 +41,17 @@ const PostPage: React.FC<PostPageProps> = () => {
         ...prev,
         selectedPost: { id: postDoc.id, ...postDoc.data() } as Post,
       }));
+      // setPostStateValue((prev) => ({
+      //   ...prev,
+      //   selectedPost: {} as Post,
+      // }));
     } catch (error: any) {
       console.log("fetchPost error", error.message);
     }
     setLoading(false);
   };
 
+  // Fetch post if not in already in state
   useEffect(() => {
     const { pid } = router.query;
 
@@ -66,6 +72,7 @@ const PostPage: React.FC<PostPageProps> = () => {
               <>
                 <PostItem
                   post={postStateValue.selectedPost}
+                  // postIdx={postStateValue.selectedPost.postIdx}
                   onVote={onVote}
                   onDeletePost={onDeletePost}
                   userVoteValue={
@@ -93,6 +100,7 @@ const PostPage: React.FC<PostPageProps> = () => {
         <About
           communityData={
             communityStateValue.currentCommunity
+            // communityStateValue.visitedCommunities[community as string]
           }
           loading={loading}
         />

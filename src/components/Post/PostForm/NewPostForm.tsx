@@ -100,6 +100,7 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
 
       console.log("HERE IS NEW POST ID", postDocRef.id);
 
+      // // check if selectedFile exists, if it does, do image processing
       if (selectedFile) {
         const imageRef = ref(storage, `posts/${postDocRef.id}/image`);
         await uploadString(imageRef, selectedFile, "data_url");
@@ -109,6 +110,8 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
         });
         console.log("HERE IS DOWNLOAD URL", downloadURL);
       }
+
+      // Clear the cache to cause a refetch of the posts
       setPostItems((prev) => ({
         ...prev,
         postUpdateRequired: true,
