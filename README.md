@@ -2,7 +2,7 @@
   Reddit Clone  <image src="https://logodownload.org/wp-content/uploads/2018/02/reddit-logo-16.png" width="45px" align="center" />
 </h1>
   
-![](https://iharsh234.github.io/WebApp/images/demo/demo_landing.JPG)
+![reddit-home2](https://user-images.githubusercontent.com/80779259/172726294-8031d021-c38b-4b94-b556-cb07f60680ea.jpg)
 
 <table>
 <tr>
@@ -12,57 +12,25 @@
 </tr>
 </table>
 
-
 ## Demo
 Você pode ver o site clicando no link da demo:  https://reddit-clone-next.vercel.app/
 
-
 ## Site
 
-### Landing Page
-Currently it is working on all NSE (India) Stocks, BSE (India) Stocks Symbol will be added soon.
+### Home Page sem o usuário logado
 
-![](https://iharsh234.github.io/WebApp/images/demo/web_app_face.JPG)
+![reddit-home](https://user-images.githubusercontent.com/80779259/172726094-32a296c8-8bdc-49c0-a00e-8445f6aa4123.jpg)
 
-### Query Filled Form
-![](https://iharsh234.github.io/WebApp/images/demo/demo_query.JPG)
+## Subreddit
 
-### Charts
-![](https://iharsh234.github.io/WebApp/images/demo/demo_chart1.JPG)
-![](https://iharsh234.github.io/WebApp/images/demo/demo_chart2.JPG)
-![](https://iharsh234.github.io/WebApp/images/demo/demo_chart3.JPG)
+![reddit-sub](https://user-images.githubusercontent.com/80779259/172729339-94aca5b1-9cfd-49d4-891e-562afd6b21d9.jpg)
 
+## Página de criação de posts
 
-## Mobile support
-The WebApp is compatible with devices of all sizes and all OS's, and consistent improvements are being made.
-
-![](https://iharsh234.github.io/WebApp/images/demo/mobile.png)
-
-
-
-
-## [Usage](https://iharsh234.github.io/WebApp/) 
-
-### Development
-Want to contribute? Great!
-
-To fix a bug or enhance an existing module, follow these steps:
-
-- Fork the repo
-- Create a new branch (`git checkout -b improve-feature`)
-- Make the appropriate changes in the files
-- Add changes to reflect the changes made
-- Commit your changes (`git commit -am 'Improve feature'`)
-- Push to the branch (`git push origin improve-feature`)
-- Create a Pull Request 
-
-### Bug / Feature Request
-
-If you find a bug (the website couldn't handle the query and / or gave undesired results), kindly open an issue [here](https://github.com/iharsh234/WebApp/issues/new) by including your search query and the expected result.
-
-If you'd like to request a new function, feel free to do so by opening an issue [here](https://github.com/iharsh234/WebApp/issues/new). Please include sample queries and their corresponding results.
+![reddit-createpost](https://user-images.githubusercontent.com/80779259/172729467-0e159313-1008-4bb9-8db5-b8095b757586.jpg)
 
 ## :wrench: Tecnologias | Ferramentas | Recursos
+
 
 Esse projeto foi desenvolvido utilizando os seguintes recursos:
 
@@ -91,9 +59,10 @@ Frontend
 - [Typescript](https://www.typescriptlang.org/)
 
 ## To-do
-- Add BSE (India) Symbol to the current App.
-- Decide comparison models of Stocks. (suggestions are most welcome).
-- Another WebApp, capable of comparing at least 10 stocks.
+- [x] Ícones na Navbar quando o usuário está logado.
+- [x] Página para criar posts
+- [x] Upvote e downvote em posts
+- [x] Comentário em Posts 
 
 ### :memo: License
 
