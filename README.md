@@ -61,8 +61,13 @@ Frontend
 ## To-do
 - [x] Ícones na Navbar quando o usuário está logado.
 - [x] Página para criar posts
+- [x] Deletar posts
 - [x] Upvote e downvote em posts
-- [x] Comentário em Posts 
+- [x] Comentário em Posts
+- [x] Mudar a foto do subreddit
+- [ ] Adicionar descrição ao subreddit
+- [ ] Dark Mode
+- [ ] Filtrar posts por post mais recente, mais votado, mais antigo
 
 ### :memo: License
 
