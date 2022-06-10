@@ -68,6 +68,9 @@ Frontend
 - [ ] Adicionar descrição ao subreddit
 - [ ] Dark Mode
 - [ ] Filtrar posts por post mais recente, mais votado, mais antigo
+- [ ] Exibir quando o usário está logado
+- [ ] Pesquisar subreddits
+- [ ] Adicionar capa no subreddit
 
 ### :memo: License
 
