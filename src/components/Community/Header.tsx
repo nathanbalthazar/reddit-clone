@@ -1,9 +1,8 @@
+import { Box, Button, Flex, Icon, Image, Text } from "@chakra-ui/react";
 import React from "react";
-import { Box, Button, Flex, Icon, Text, Image } from "@chakra-ui/react";
 import { FaReddit } from "react-icons/fa";
-import { Community, communityState } from "../../atoms/communitiesAtom";
+import { Community } from "../../atoms/communitiesAtom";
 import useCommunityData from "../../hooks/useCommunityData";
-import { useSetRecoilState } from "recoil";
 
 type HeaderProps = {
   communityData: Community;
@@ -11,7 +10,7 @@ type HeaderProps = {
 
 const Header: React.FC<HeaderProps> = ({ communityData }) => {
   /**
-   * !!!Don't pass communityData boolean until the end
+   * !!!Don't pass communityData boolean until the endF
    * It's a small optimization!!!
    */
   const { communityStateValue, loading, error, onJoinLeaveCommunity } =
